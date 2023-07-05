@@ -342,13 +342,6 @@ button:disabled {
 
 .numbers__icon svg {
   color: #0365f2;
-  width: 48px;
-  height: 48px;
-}
-
-.numbers__star--icon svg {
-  width: 20px;
-  height: 20px;
 }
 
 .numbers__title {
