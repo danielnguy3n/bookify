@@ -8,7 +8,6 @@ import StatHeadings from "@/components/Home/StatHeadings";
 import Statistic from "@/components/Home/Statistic";
 import Review from "@/components/Home/Review";
 import Numbers from "@/components/Home/Numbers";
-import { title } from "process";
 import Footer from "@/components/Home/Footer";
 
 export default function Home() {
