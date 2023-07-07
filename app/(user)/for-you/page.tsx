@@ -1,10 +1,5 @@
-
-import BookRow from "./BookRow";
-import SelectedBook from "./SelectedBook";
-
-interface Props {
-  status: string;
-}
+import BookRow from "@/components/For-You/BookRow";
+import SelectedBook from "@/components/For-You/SelectedBook";
 
 async function getBooks(status: string) {
   const res = await fetch(
@@ -13,7 +8,7 @@ async function getBooks(status: string) {
   return res.json();
 }
 
-async function Body() {
+export default async function ForYou() {
   const selectedData = getBooks("selected");
   const recommendedData = getBooks("recommended");
   const suggestedData = getBooks("suggested");
@@ -30,6 +25,7 @@ async function Body() {
         <div className="for-you__wrapper">
           <div className="for-you__title">Selected Just For you</div>
           <SelectedBook data={selectedBook}/>
+
           <div className="for-you__title">Recommended For You</div>
           <div className="for-you__subtitle">We think you’ll like these</div>
           <BookRow data={recommendedBooks} />
@@ -38,11 +34,8 @@ async function Body() {
           <div className="for-you__subtitle">Browse those books</div>
           <BookRow data={suggestedBooks}/>
 
-          {/* <SuggestedBooks /> */}
         </div>
       </div>
     </div>
   );
 }
-
-export default Body;

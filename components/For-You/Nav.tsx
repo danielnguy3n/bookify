@@ -2,12 +2,16 @@ import Image from "next/image";
 import React from "react";
 import { AiOutlineHome, AiOutlineQuestionCircle } from "react-icons/ai";
 import { HiMagnifyingGlass } from "react-icons/hi2";
-import { RiBallPenLine } from "react-icons/ri";
+import { RiBallPenLine, RiFontSize } from "react-icons/ri";
 import { BsBookmark } from "react-icons/bs";
 import { CiSettings } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
 
-function Nav() {
+interface Props {
+  audioNav: Boolean;
+}
+
+function Nav({ audioNav }: Props) {
   return (
     <nav className="sidebar">
       <div className="sidebar__logo">
@@ -19,7 +23,7 @@ function Nav() {
           className=""
         />
       </div>
-      <div className="sidebar__wrapper">
+      <div className={`sidebar__wrapper ${audioNav && `audio__sidebar`}`}>
         <div className="sidebar__top">
           <a href="" className="sidebar__link--wrapper">
             <div className="sidebar__link--line active--tab"></div>
@@ -49,6 +53,23 @@ function Nav() {
             </div>
             <div className="sidebar__link--text">Search</div>
           </div>
+
+          {audioNav && (
+            <div className="sidebar__link--wrapper sidebar__fonts">
+              <div className="sidebar__font-icon font-size--active">
+                <RiFontSize className="font-s"/>
+              </div>
+              <div className="sidebar__font-icon ">
+                <RiFontSize className="font-m"/>
+              </div>
+              <div className="sidebar__font-icon ">
+                <RiFontSize className="font-l"/>
+              </div>
+              <div className="sidebar__font-icon ">
+                <RiFontSize className="font-xl"/>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="nav__bot">

@@ -1,4 +1,5 @@
 import { Book } from "@/typings";
+import Link from "next/link";
 import { AiOutlineStar } from "react-icons/ai";
 import { HiOutlineClock } from "react-icons/hi";
 
@@ -8,7 +9,7 @@ interface Props {
 
 function BookCard({ book }: Props) {
   return (
-    <a href="" className="book--wrapper">
+    <Link href={`/book/${book.id}`} className="book--wrapper">
       {book.subscriptionRequired && <div className="book--pill">Premium</div>}
       <figure className="book__image--wrapper">
         <img src={book.imageLink} alt="" className="book__img" />
@@ -30,7 +31,7 @@ function BookCard({ book }: Props) {
           <div className="book__details--text">{book.averageRating}</div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
 
