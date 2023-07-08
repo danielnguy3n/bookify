@@ -1012,6 +1012,8 @@ button:disabled {
   width: 100%;
   background-color: #042330;
   height: 80px;
+  margin-top: auto;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 40px;
@@ -1019,6 +1021,114 @@ button:disabled {
   bottom: 0;
   left: 0;
   z-index: 9999;
+}
+
+.audio__wrapper>div {
+  width: calc(100% / 3);
+}
+
+.audio__track--wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.audio__img--mask {
+  display: flex;
+  max-width: 48px;
+}
+
+.audio__img--wrapper {
+  height: 48px;
+  width: 48px;
+  min-width: 48px;
+}
+
+.audio___img {
+  width: 100%;
+  height: 100%;
+}
+
+.audio__text {
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.audio__author {
+  color: #bac8ce;
+}
+
+.audio__controls, .audio__controls--btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.audio__controls {
+  gap: 24px;
+}
+
+.audio__controls--btn {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.audio__controls--btn svg {
+  width: 28px;
+  height: 28px;
+  transition: all .2s;
+}
+
+.audio__controls--btn svg path {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.audio__controls--btn svg:hover {
+  stroke: #2bd97c;
+}
+
+.audio__controls--btn--play {
+  background-color: #fff;
+  width: 40px;
+  height: 40px;
+}
+
+.audio__controls--btn--play svg {
+  color: #042330;
+  margin-left: 4px;
+  width: 44px;
+  height: 44px;
+}
+
+.audio__controls--btn--play svg path {
+  stroke-width: 0px;
+}
+
+.audio__progress--wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.audio__time {
+  color: #fff;
+  font-size: 14px;
+}
+
+.audio__progress--bar {
+  border-radius: 8px;
+  height: 4px;
+  max-width: 300px;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
 }
 
 @media (max-width: 768px) {
