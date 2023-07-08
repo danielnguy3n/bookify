@@ -1,17 +1,30 @@
+"use client";
+
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineHome, AiOutlineQuestionCircle } from "react-icons/ai";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { RiBallPenLine, RiFontSize } from "react-icons/ri";
 import { BsBookmark } from "react-icons/bs";
 import { CiSettings } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
+import { useDispatch, useSelector } from 'react-redux'
+import { setFontSize } from "@/redux/fontSizeSlice";
+import { RootState } from "@/redux/store";
 
 interface Props {
   audioNav: Boolean;
 }
 
 function Nav({ audioNav }: Props) {
+  const [activeTab, setActiveTab] = useState(1);
+  const dispatch = useDispatch()
+
+  function switchTabs(tabNum: number, fontSize: number) {
+    setActiveTab(tabNum);
+    dispatch(setFontSize(fontSize))
+  }
+
   return (
     <nav className="sidebar">
       <div className="sidebar__logo">
@@ -56,17 +69,37 @@ function Nav({ audioNav }: Props) {
 
           {audioNav && (
             <div className="sidebar__link--wrapper sidebar__fonts">
-              <div className="sidebar__font-icon font-size--active">
-                <RiFontSize className="font-s"/>
+              <div
+                className={`sidebar__font-icon ${
+                  activeTab === 1 && `font-size--active`
+                }`}
+                onClick={() => switchTabs(1, 16)}
+              >
+                <RiFontSize className="font-s" />
               </div>
-              <div className="sidebar__font-icon ">
-                <RiFontSize className="font-m"/>
+              <div
+                className={`sidebar__font-icon ${
+                  activeTab === 2 && `font-size--active`
+                }`}
+                onClick={() => switchTabs(2, 18)}
+              >
+                <RiFontSize className="font-m" />
               </div>
-              <div className="sidebar__font-icon ">
-                <RiFontSize className="font-l"/>
+              <div
+                className={`sidebar__font-icon ${
+                  activeTab === 3 && `font-size--active`
+                }`}
+                onClick={() => switchTabs(3, 22)}
+              >
+                <RiFontSize className="font-l" />
               </div>
-              <div className="sidebar__font-icon ">
-                <RiFontSize className="font-xl"/>
+              <div
+                className={`sidebar__font-icon ${
+                  activeTab === 4 && `font-size--active`
+                }`}
+                onClick={() => switchTabs(4, 26)}
+              >
+                <RiFontSize className="font-xl" />
               </div>
             </div>
           )}
