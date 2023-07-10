@@ -1,22 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import Google from "../../public/images/google.png";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { closeModal, openModal } from "@/redux/modalSlice";
 
-
 function AuthModal() {
   const [signIn, setSignIn] = useState(true);
-  const modalOpen = useAppSelector(state => state.modals.modalOpen)
-  const dispatch = useAppDispatch()
-//   {() => setLogin(false)}
+  const modalOpen = useAppSelector((state) => state.modals.modalOpen);
+  const dispatch = useAppDispatch();
+  //   {() => setLogin(false)}
 
   return (
     <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>
-      <div className="modal">
-        <div className="modal__content" onClick={e => e.stopPropagation()}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal__content" >
           {signIn ? (
             <>
               <div className="modal__title">Login to Summarist</div>
@@ -70,12 +71,10 @@ function AuthModal() {
           </form>
         </div>
         <div className="modal__forgot-password">Forgot your password?</div>
-        
+
         <button className="modal__account" onClick={() => setSignIn(!signIn)}>
-            {
-                signIn ? `Don't have an account?` : `Already have an account?`
-            }
-            </button>
+          {signIn ? `Don't have an account?` : `Already have an account?`}
+        </button>
         <div className="modal__close" onClick={() => dispatch(closeModal())}>
           <IoMdClose />
         </div>
