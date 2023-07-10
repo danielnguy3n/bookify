@@ -1,16 +1,12 @@
-"use client";
-
 import Image from "next/image";
 import pricingTop from "../../public/images/pricing-top.png";
 import { AiFillFileText } from "react-icons/ai";
 import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa6";
-import { BsChevronDown } from "react-icons/bs";
 import Accordian from "@/components/Choose-Plan/Accordian";
+import PlanSelector from "@/components/Choose-Plan/PlanSelector";
 
 function choosePlan() {
-
-
   return (
     <div className="plan">
       <div className="plan__header--wrapper">
@@ -57,38 +53,7 @@ function choosePlan() {
             </div>
           </div>
           <div className="section__title">Choose the plan that fits you</div>
-          <div className="plan__card  plan__card--active">
-            <div className="plan__card--circle">
-              <div className="plan__card--dot"></div>
-            </div>
-            <div className="plan__card--content">
-              <div className="plan__card--title">Premium Plus Yearly</div>
-              <div className="plan__card--price">$99.99/year</div>
-              <div className="plan__card--text">7-day free trial included</div>
-            </div>
-          </div>
-          <div className="plan__card--separator">
-            <div className="plan__separator">or</div>
-          </div>
-          <div className="plan__card">
-            <div className="plan__card--circle">
-              <div className="plan__card--dot"></div>
-            </div>
-            <div className="plan__card--content">
-              <div className="plan__card--title">Premium Monthly</div>
-              <div className="plan__card--price">$9.99/month</div>
-              <div className="plan__card--text">No trial included</div>
-            </div>
-          </div>
-          <div className="plan__card--cta">
-            <button className="btn" style={{ width: 300 }}>
-              Start your free 7-day trial
-            </button>
-            <div className="plan__disclaimer">
-              Cancel your trial at any time before it ends, and you won't be
-              charged.
-            </div>
-          </div>
+          <PlanSelector />
           <Accordian />
         </div>
       </div>

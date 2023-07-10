@@ -1,8 +1,9 @@
+'use client'
+
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 
 function Accordian() {
-  const [isOpen, setIsOpen] = useState(false);
   const [activeCard, setActiveCard] = useState<number>(0);
 
   function toggleCard(cardNum: number) {
