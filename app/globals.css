@@ -1395,6 +1395,62 @@ input[type="range"]:active::-moz-range-thumb {
   text-align: center;
 }
 
+.accordian__card {
+  border-bottom: 1px solid #ddd;
+  padding: 24px 0 ;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.accordian__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor:pointer;
+  gap: 8px;
+}
+
+.accordian__title {
+  font-weight: 500;
+  font-size: 24px;
+  position: relative;
+  margin-bottom: 0;
+  color: #032b41;
+  transition: .3s;
+}
+
+.accordian__icon {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  transition: transform .3s;
+}
+
+.accordian__icon--rotate {
+  transform: rotate(-180deg);
+}
+
+.accordian__collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.accordian__inner {
+  overflow: hidden;
+}
+
+.accordian__body {
+  margin-top: 24px;
+  color: #394547;
+  line-height: 1.5;
+}
+
+.accordian__collapse.show {
+  grid-template-rows: 1fr;
+}
+
+
 @media (max-width: 768px) {
   .landing__content {
     display: flex;
