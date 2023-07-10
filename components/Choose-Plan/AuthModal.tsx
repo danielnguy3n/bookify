@@ -4,20 +4,51 @@ import Image from "next/image";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import Google from "../../public/images/google.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { closeModal, openModal } from "@/redux/modalSlice";
+import { closeModal } from "@/redux/modalSlice";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "@/firebase";
+import { setUser } from "@/redux/userSlice";
 
 function AuthModal() {
   const [signIn, setSignIn] = useState(true);
-  const modalOpen = useAppSelector((state) => state.modals.modalOpen);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
-  //   {() => setLogin(false)}
+
+  async function handleSignUp() {
+    const userCredentials = createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+  }
+
+  useEffect(() => {
+    const userVar = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) return;
+      dispatch(
+        setUser({
+          email: currentUser.email,
+        })
+      );
+      console.log(currentUser)
+      // handle redux actions
+    });
+
+    return userVar;
+  }, []);
+
+
 
   return (
     <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal__content" >
+        <div className="modal__content">
           {signIn ? (
             <>
               <div className="modal__title">Login to Summarist</div>
@@ -52,23 +83,27 @@ function AuthModal() {
           <div className="modal__separator">
             <span>or</span>
           </div>
-          <form className="login__form">
+          <div className="login__form">
             <input
               type="text"
               className="login__input"
               placeholder="Email Address"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               className="login__input"
               placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
             />
             {signIn ? (
               <button className="btn">Login</button>
             ) : (
-              <button className="btn">Sign Up</button>
+              <button className="btn" onClick={handleSignUp}>
+                Sign Up
+              </button>
             )}
-          </form>
+          </div>
         </div>
         <div className="modal__forgot-password">Forgot your password?</div>
 

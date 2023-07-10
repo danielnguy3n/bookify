@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import pricingTop from "../../public/images/pricing-top.png";
 import { AiFillFileText } from "react-icons/ai";
@@ -5,8 +7,12 @@ import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa6";
 import Accordian from "@/components/Choose-Plan/Accordian";
 import PlanSelector from "@/components/Choose-Plan/PlanSelector";
+import { useAppSelector } from "@/redux/store";
 
 function choosePlan() {
+  const userEmail = useAppSelector(state => state.user.email)
+  console.log(userEmail);
+
   return (
     <div className="plan">
       <div className="plan__header--wrapper">

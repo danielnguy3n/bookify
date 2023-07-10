@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 import fontSizeSlice from './fontSizeSlice'
 import modalSlice from './modalSlice'
+import userSlice from './userSlice'
 
 export const store = configureStore({
   reducer: {
     fontSize: fontSizeSlice,
     modals: modalSlice,
+    user: userSlice
   },
 })
 
