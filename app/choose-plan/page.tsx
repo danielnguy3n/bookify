@@ -5,6 +5,7 @@ import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa6";
 import Accordian from "@/components/Choose-Plan/Accordian";
 import PlanSelector from "@/components/Choose-Plan/PlanSelector";
+import AuthModal from "@/components/Choose-Plan/AuthModal";
 
 function choosePlan() {
   return (
@@ -55,6 +56,7 @@ function choosePlan() {
           <div className="section__title">Choose the plan that fits you</div>
           <PlanSelector />
           <Accordian />
+          <AuthModal />
         </div>
       </div>
     </div>
