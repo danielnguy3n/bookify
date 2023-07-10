@@ -6,14 +6,10 @@ import { AiFillFileText } from "react-icons/ai";
 import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa6";
 import { BsChevronDown } from "react-icons/bs";
-import { useState } from "react";
+import Accordian from "@/components/Choose-Plan/Accordian";
 
 function choosePlan() {
-  const [isOpen, setIsOpen] = useState(false);
 
-  function toggleCard() {
-    setIsOpen(!isOpen);
-  }
 
   return (
     <div className="plan">
@@ -93,38 +89,7 @@ function choosePlan() {
               charged.
             </div>
           </div>
-          <div className="faq__wrapper">
-
-            <div className="accordian__card" onClick={() => toggleCard()}>
-              <div className="accordian__header">
-                <div className="accordian__title">
-                  How does the free 7-day trial work?
-                </div>
-                <BsChevronDown
-                  className={`accordian__icon ${
-                    isOpen && ` accordian__icon--rotate`
-                  }`}
-                />
-              </div>
-              <div
-                className={`accordian__collapse ${isOpen ? `show` : ""}`}
-              >
-                <div className="accordian__inner">
-                  <div className="accordian__body">
-                    Begin your complimentary 7-day trial with a Summarist annual
-                    membership. You are under no obligation to continue your
-                    subscription, and you will only be billed when the trial
-                    period expires. With Premium access, you can learn at your
-                    own pace and as frequently as you desire, and you may
-                    terminate your subscription prior to the conclusion of the
-                    7-day free trial.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            
-          </div>
+          <Accordian />
         </div>
       </div>
     </div>

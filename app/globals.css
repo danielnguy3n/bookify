@@ -1400,13 +1400,13 @@ input[type="range"]:active::-moz-range-thumb {
   padding: 24px 0 ;
   margin-bottom: 8px;
   overflow: hidden;
+  cursor:pointer;
 }
 
 .accordian__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor:pointer;
   gap: 8px;
 }
 
