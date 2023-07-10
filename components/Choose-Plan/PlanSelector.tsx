@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import AuthModal from "./AuthModal";
 
 function PlanSelector() {
   const [yearlyPlan, setYearlyPlan] = useState(true);
+  const [login, setLogin] = useState(false);
 
   return (
     <>
@@ -37,7 +39,7 @@ function PlanSelector() {
         </div>
       </div>
       <div className="plan__card--cta">
-        <button className="btn" style={{ width: 300 }}>
+        <button className="btn" style={{ width: 300 }} onClick={() => setLogin(true)}>
           {yearlyPlan
             ? "Start Your Free 7-day Trial"
             : "Start Your First Month"}
@@ -46,9 +48,9 @@ function PlanSelector() {
           {yearlyPlan
             ? "Cancel your trial at any time before it ends, and you won't be charged."
             : "30-day money back guarantee, no questions asked."}
-          
         </div>
       </div>
+      {login && <AuthModal setLogin={setLogin} />}
     </>
   );
 }
