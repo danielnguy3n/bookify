@@ -1,4 +1,5 @@
 import Footer from "@/components/Home/Footer";
+import { ReduxProvider } from "@/redux/provider";
 
 export default function UserLayout({
   children,
@@ -7,7 +8,7 @@ export default function UserLayout({
 }) {
   return (
     <div className="wrapper wrapper__full">
-      {children}
+      <ReduxProvider>{children}</ReduxProvider>
       <Footer />
     </div>
   );

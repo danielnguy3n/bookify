@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import AuthModal from "./AuthModal";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { openModal } from "@/redux/modalSlice";
 
 function PlanSelector() {
   const [yearlyPlan, setYearlyPlan] = useState(true);
-  const [login, setLogin] = useState(false);
+  const modalOpen = useAppSelector(state => state.modals.modalOpen)
+  const dispatch = useAppDispatch()
 
   return (
     <>
@@ -39,7 +42,7 @@ function PlanSelector() {
         </div>
       </div>
       <div className="plan__card--cta">
-        <button className="btn" style={{ width: 300 }} onClick={() => setLogin(true)}>
+        <button className="btn" style={{ width: 300 }} onClick={() => dispatch(openModal())}>
           {yearlyPlan
             ? "Start Your Free 7-day Trial"
             : "Start Your First Month"}
@@ -50,7 +53,7 @@ function PlanSelector() {
             : "30-day money back guarantee, no questions asked."}
         </div>
       </div>
-      {login && <AuthModal setLogin={setLogin} />}
+      {modalOpen && <AuthModal />}
     </>
   );
 }

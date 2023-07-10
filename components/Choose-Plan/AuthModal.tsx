@@ -3,16 +3,18 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import Google from "../../public/images/google.png";
 import { Dispatch, SetStateAction, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { closeModal, openModal } from "@/redux/modalSlice";
 
-interface Props {
-  setLogin: Dispatch<SetStateAction<boolean>>;
-}
 
-function AuthModal({ setLogin }: Props) {
+function AuthModal() {
   const [signIn, setSignIn] = useState(true);
+  const modalOpen = useAppSelector(state => state.modals.modalOpen)
+  const dispatch = useAppDispatch()
+//   {() => setLogin(false)}
 
   return (
-    <div className="modal__wrapper" onClick={() => setLogin(false)}>
+    <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>
       <div className="modal">
         <div className="modal__content" onClick={e => e.stopPropagation()}>
           {signIn ? (
@@ -74,7 +76,7 @@ function AuthModal({ setLogin }: Props) {
                 signIn ? `Don't have an account?` : `Already have an account?`
             }
             </button>
-        <div className="modal__close" onClick={() => setLogin(false)}>
+        <div className="modal__close" onClick={() => dispatch(closeModal())}>
           <IoMdClose />
         </div>
       </div>
