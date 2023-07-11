@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AuthModal from "./AuthModal";
+import AuthModal from "../Global/AuthModal";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { openModal } from "@/redux/modalSlice";
 

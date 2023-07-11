@@ -10,6 +10,7 @@ import { closeModal } from "@/redux/modalSlice";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "@/firebase";
 import { setUser } from "@/redux/userSlice";
@@ -21,11 +22,12 @@ function AuthModal() {
   const dispatch = useAppDispatch();
 
   async function handleSignUp() {
-    const userCredentials = createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    await createUserWithEmailAndPassword(auth, email, password);
+  }
+
+  async function handleSignIn() {
+    await signInWithEmailAndPassword(auth, email, password);
+    dispatch(closeModal())
   }
 
   useEffect(() => {
@@ -36,14 +38,12 @@ function AuthModal() {
           email: currentUser.email,
         })
       );
-      console.log(currentUser)
+      console.log(currentUser);
       // handle redux actions
     });
 
     return userVar;
   }, []);
-
-
 
   return (
     <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>
@@ -97,7 +97,9 @@ function AuthModal() {
               onChange={(e) => setPassword(e.target.value)}
             />
             {signIn ? (
-              <button className="btn">Login</button>
+              <button className="btn" onClick={handleSignIn}>
+                Login
+              </button>
             ) : (
               <button className="btn" onClick={handleSignUp}>
                 Sign Up

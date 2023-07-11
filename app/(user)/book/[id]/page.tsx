@@ -1,6 +1,11 @@
 import { Book } from "@/typings";
 import Image from "next/image";
-import { AiOutlineAudio, AiOutlineClockCircle, AiOutlineStar } from "react-icons/ai";
+import Link from "next/link";
+import {
+  AiOutlineAudio,
+  AiOutlineClockCircle,
+  AiOutlineStar,
+} from "react-icons/ai";
 import { BsBookmark } from "react-icons/bs";
 import { HiOutlineBookOpen, HiOutlineLightBulb } from "react-icons/hi";
 
@@ -42,31 +47,35 @@ async function bookPage({ params }: { params: { id: string } }) {
                   <div className="book-info__detail--icon">
                     <AiOutlineAudio />
                   </div>
-                  <div className="book-info__detail--text">
-                    {book.type}
-                  </div>
+                  <div className="book-info__detail--text">{book.type}</div>
                 </div>
                 <div className="book-info__detail">
                   <div className="book-info__detail--icon">
                     <HiOutlineLightBulb />
                   </div>
-                  <div className="book-info__detail--text">{book.keyIdeas} Key Ideas</div>
+                  <div className="book-info__detail--text">
+                    {book.keyIdeas} Key Ideas
+                  </div>
                 </div>
               </div>
             </div>
             <div className="book-info__button-wrapper">
-              <button className="book-info__button">
-                <div className="button__icon">
-                  <HiOutlineBookOpen />
-                </div>
-                <div className="button__text">Read</div>
-              </button>
-              <button className="book-info__button">
-                <div className="button__icon">
-                  <AiOutlineAudio />
-                </div>
-                <div className="button__text">Listen</div>
-              </button>
+              <Link href={`/player/${bookId}`}>
+                <button className="book-info__button">
+                  <div className="button__icon">
+                    <HiOutlineBookOpen />
+                  </div>
+                  <div className="button__text">Read</div>
+                </button>
+              </Link>
+              <Link href={`/player/${bookId}`}>
+                <button className="book-info__button">
+                  <div className="button__icon">
+                    <AiOutlineAudio />
+                  </div>
+                  <div className="button__text">Listen</div>
+                </button>
+              </Link>
             </div>
             <div className="book-info__bookmark">
               <div className="bookmark__icon">
@@ -79,9 +88,7 @@ async function bookPage({ params }: { params: { id: string } }) {
               <div className="book-info__tag">{book.tags[0]}</div>
               <div className="book-info__tag">{book.tags[1]}</div>
             </div>
-            <div className="book-info__description">
-              {book.bookDescription}
-            </div>
+            <div className="book-info__description">{book.bookDescription}</div>
             <div className="book-info__secondary-title">About the Author</div>
             <div className="book-info__author-description">
               {book.authorDescription}

@@ -8,9 +8,13 @@ import { RiBallPenLine, RiFontSize } from "react-icons/ri";
 import { BsBookmark } from "react-icons/bs";
 import { CiSettings } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
-import { useDispatch, useSelector } from 'react-redux'
 import { setFontSize } from "@/redux/fontSizeSlice";
-import { RootState } from "@/redux/store";
+import { openModal } from "@/redux/modalSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import AuthModal from "../Global/AuthModal";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase";
+import { signOutUser } from "@/redux/userSlice";
 
 interface Props {
   audioNav: Boolean;
@@ -18,11 +22,18 @@ interface Props {
 
 function Nav({ audioNav }: Props) {
   const [activeTab, setActiveTab] = useState(1);
-  const dispatch = useDispatch()
+  const modalOpen = useAppSelector((state) => state.modals.modalOpen);
+  const userEmail = useAppSelector((state) => state.user.email);
+  const dispatch = useAppDispatch();
 
   function switchTabs(tabNum: number, fontSize: number) {
     setActiveTab(tabNum);
-    dispatch(setFontSize(fontSize))
+    dispatch(setFontSize(fontSize));
+  }
+
+  async function handleSignOut() {
+    signOut(auth)
+    dispatch(signOutUser())
   }
 
   return (
@@ -120,13 +131,31 @@ function Nav({ audioNav }: Props) {
             </div>
             <div className="sidebar__link--text">Help & Support</div>
           </div>
-          <a href="" className="sidebar__link--wrapper ">
-            <div className="sidebar__link--line"></div>
-            <div className="sidebar__link--icon">
-              <LuLogOut />
+          {userEmail ? (
+            <div
+              className="sidebar__link--wrapper "
+              onClick={handleSignOut}
+            >
+              <div className="sidebar__link--line"></div>
+              <div className="sidebar__link--icon">
+                <LuLogOut />
+              </div>
+              <div className="sidebar__link--text">Logout</div>
             </div>
-            <div className="sidebar__link--text">Login</div>
-          </a>
+          ) : (
+            <div
+              className="sidebar__link--wrapper "
+              onClick={() => dispatch(openModal())}
+            >
+              <div className="sidebar__link--line"></div>
+              <div className="sidebar__link--icon">
+                <LuLogOut />
+              </div>
+              <div className="sidebar__link--text">Login</div>
+            </div>
+          )}
+
+          {modalOpen && <AuthModal />}
         </div>
       </div>
     </nav>
