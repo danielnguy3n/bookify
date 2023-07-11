@@ -1495,6 +1495,12 @@ input[type="range"]:active::-moz-range-thumb {
   margin-bottom: 24px;
 }
 
+.modal__error {
+  color: #f56c6c;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
 .btn__login--guest, .btn__login--google {
   color: #fff;
   background-color: #3A579D;

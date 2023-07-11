@@ -4,7 +4,7 @@ import Image from "next/image";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import Google from "../../public/images/google.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { closeModal } from "@/redux/modalSlice";
 import {
@@ -19,21 +19,45 @@ function AuthModal() {
   const [signIn, setSignIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("")
   const userEmail = useAppSelector(state => state.user.email)
   const dispatch = useAppDispatch();
 
   async function handleSignUp() {
-    await createUserWithEmailAndPassword(auth, email, password);
-    dispatch(closeModal())
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      dispatch(closeModal())
+    } catch (err: any) {
+      setError(err.message)
+    }
   }
 
   async function handleSignIn() {
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      dispatch(closeModal())
+    } catch(err: any) {
+      setError(err.message)
+    }
+  }
+
+  async function guestSignIn() {
+    await signInWithEmailAndPassword(auth, 'guest@gmail.com', 'guest123');
     dispatch(closeModal())
   }
 
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    signIn ? handleSignIn() : handleSignUp()
+  }
+
+  function toggleModal() {
+    setSignIn(!signIn)
+    setError("")
+  }
+
   useEffect(() => {
-    const userVar = onAuthStateChanged(auth, (currentUser) => {
+    const authState = onAuthStateChanged(auth, (currentUser) => {
       console.log(currentUser);
       if (!currentUser) return;
       dispatch(
@@ -44,7 +68,7 @@ function AuthModal() {
       // handle redux actions
     });
 
-    return userVar;
+    return authState;
   }, [userEmail]);
 
   return (
@@ -54,11 +78,12 @@ function AuthModal() {
           {signIn ? (
             <>
               <div className="modal__title">Login to Summarist</div>
+              {error && <div className="modal__error">{error}</div>}
               <button className="btn btn__login--guest">
                 <figure className="btn__icon">
                   <BsFillPersonFill />
                 </figure>
-                <div className="btn__text">Login as a Guest</div>
+                <div className="btn__text" onClick={guestSignIn}>Login as a Guest</div>
               </button>
               <div className="modal__separator">
                 <div className="modal__separator--text">or</div>
@@ -73,6 +98,7 @@ function AuthModal() {
           ) : (
             <>
               <div className="modal__title">Sign up Summarist</div>
+              {error && <div className="modal__error">{error}</div>}
               <button className="btn btn__login--google">
                 <div className="btn__icon btn__icon--google">
                   <Image src={Google} alt="google" width={24} height={24} />
@@ -85,7 +111,7 @@ function AuthModal() {
           <div className="modal__separator">
             <span>or</span>
           </div>
-          <div className="login__form">
+          <form onSubmit={handleSubmit} className="login__form">
             <input
               type="text"
               className="login__input"
@@ -99,19 +125,19 @@ function AuthModal() {
               onChange={(e) => setPassword(e.target.value)}
             />
             {signIn ? (
-              <button className="btn" onClick={handleSignIn}>
+              <button type="submit" className="btn">
                 Login
               </button>
             ) : (
-              <button className="btn" onClick={handleSignUp}>
+              <button type="submit" className="btn">
                 Sign Up
               </button>
             )}
-          </div>
+          </form>
         </div>
         <div className="modal__forgot-password">Forgot your password?</div>
 
-        <button className="modal__account" onClick={() => setSignIn(!signIn)}>
+        <button className="modal__account" onClick={() => toggleModal()}>
           {signIn ? `Don't have an account?` : `Already have an account?`}
         </button>
         <div className="modal__close" onClick={() => dispatch(closeModal())}>
