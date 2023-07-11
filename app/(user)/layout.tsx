@@ -1,5 +1,6 @@
 import Nav from "@/components/For-You/Nav";
 import Searchbar from "@/components/For-You/Searchbar";
+import { ReduxProvider } from "@/redux/provider";
 
 export default function UserLayout({
   children,
@@ -7,10 +8,12 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="wrapper">
-      <Nav audioNav={false}/>
-      <Searchbar />
-      {children}
-    </div>
+    <ReduxProvider>
+      <div className="wrapper">
+        <Nav audioNav={false} />
+        <Searchbar />
+        {children}
+      </div>
+    </ReduxProvider>
   );
 }

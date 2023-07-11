@@ -1,6 +1,11 @@
+'use client'
+
+import { openModal } from "@/redux/modalSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Book } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   AiOutlineAudio,
   AiOutlineClockCircle,
@@ -16,17 +21,32 @@ async function getBook(id: string) {
   return res.json();
 }
 
-async function bookPage({ params }: { params: { id: string } }) {
+ function bookPage({ params }: { params: { id: string } }) {
   const bookId: string = params.id;
-  const book: Book = await getBook(bookId);
+  const [book, setBook] = useState<Book>();
+
+  async function fetchBook() {
+    const data = await getBook(bookId);
+    setBook(data);
+  }
+
+  useEffect(() => {
+    fetchBook()
+  }, [])
+
+  const userEmail = useAppSelector((state) => state.user.email);
+  const dispatch = useAppDispatch()
+
+  console.log(book?.imageLink)
+
   return (
     <div className="row">
       <div className="container">
         <div className="inner__wrapper">
           <div className="inner__book">
-            <div className="book-info__title">{book.title}</div>
-            <div className="book-info__author">{book.author}</div>
-            <div className="book-info__subtitle">{book.subTitle}</div>
+            <div className="book-info__title">{book?.title}</div>
+            <div className="book-info__author">{book?.author}</div>
+            <div className="book-info__subtitle">{book?.subTitle}</div>
             <div className="book-info__details--wrapper">
               <div className="book-info__details">
                 <div className="book-info__detail">
@@ -34,7 +54,7 @@ async function bookPage({ params }: { params: { id: string } }) {
                     <AiOutlineStar />
                   </div>
                   <div className="book-info__detail--text">
-                    {book.averageRating} ({book.totalRating} ratings)
+                    {book?.averageRating} ({book?.totalRating} ratings)
                   </div>
                 </div>
                 <div className="book-info__detail">
@@ -47,35 +67,54 @@ async function bookPage({ params }: { params: { id: string } }) {
                   <div className="book-info__detail--icon">
                     <AiOutlineAudio />
                   </div>
-                  <div className="book-info__detail--text">{book.type}</div>
+                  <div className="book-info__detail--text">{book?.type}</div>
                 </div>
                 <div className="book-info__detail">
                   <div className="book-info__detail--icon">
                     <HiOutlineLightBulb />
                   </div>
                   <div className="book-info__detail--text">
-                    {book.keyIdeas} Key Ideas
+                    {book?.keyIdeas} Key Ideas
                   </div>
                 </div>
               </div>
             </div>
             <div className="book-info__button-wrapper">
-              <Link href={`/player/${bookId}`}>
-                <button className="book-info__button">
-                  <div className="button__icon">
-                    <HiOutlineBookOpen />
-                  </div>
-                  <div className="button__text">Read</div>
-                </button>
-              </Link>
-              <Link href={`/player/${bookId}`}>
-                <button className="book-info__button">
-                  <div className="button__icon">
-                    <AiOutlineAudio />
-                  </div>
-                  <div className="button__text">Listen</div>
-                </button>
-              </Link>
+              {userEmail ? (
+                <>
+                  <Link href={`/player/${bookId}`}>
+                    <button className="book-info__button">
+                      <div className="button__icon">
+                        <HiOutlineBookOpen />
+                      </div>
+                      <div className="button__text">Read</div>
+                    </button>
+                  </Link>
+                  <Link href={`/player/${bookId}`}>
+                    <button className="book-info__button">
+                      <div className="button__icon">
+                        <AiOutlineAudio />
+                      </div>
+                      <div className="button__text">Listen</div>
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                    <button className="book-info__button" onClick={() => dispatch(openModal())}>
+                      <div className="button__icon">
+                        <HiOutlineBookOpen />
+                      </div>
+                      <div className="button__text">Read</div>
+                    </button>
+                    <button className="book-info__button" onClick={() => dispatch(openModal())}>
+                      <div className="button__icon">
+                        <AiOutlineAudio />
+                      </div>
+                      <div className="button__text">Listen</div>
+                    </button>
+                </>
+              )}
             </div>
             <div className="book-info__bookmark">
               <div className="bookmark__icon">
@@ -85,20 +124,20 @@ async function bookPage({ params }: { params: { id: string } }) {
             </div>
             <div className="book-info__secondary-title">What's It About?</div>
             <div className="book-info__tags-wrapper">
-              <div className="book-info__tag">{book.tags[0]}</div>
-              <div className="book-info__tag">{book.tags[1]}</div>
+              <div className="book-info__tag">{book?.tags[0]}</div>
+              <div className="book-info__tag">{book?.tags[1]}</div>
             </div>
-            <div className="book-info__description">{book.bookDescription}</div>
+            <div className="book-info__description">{book?.bookDescription}</div>
             <div className="book-info__secondary-title">About the Author</div>
             <div className="book-info__author-description">
-              {book.authorDescription}
+              {book?.authorDescription}
             </div>
           </div>
 
           <div className="inner-book__img--wrapper">
             <figure className="book-info__img--wrapper">
               <Image
-                src={book.imageLink}
+                src={book?.imageLink!}
                 alt="Book Image"
                 width={300}
                 height={300}

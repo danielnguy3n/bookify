@@ -1,9 +1,11 @@
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
 export interface Book {
   id: string;
   author: string;
   title: string;
   subTitle: string;
-  imageLink: string;
+  imageLink: string | StaticImport;
   audioLink: string;
   totalRating: number;
   averageRating: number;

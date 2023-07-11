@@ -23,6 +23,7 @@ function AuthModal() {
 
   async function handleSignUp() {
     await createUserWithEmailAndPassword(auth, email, password);
+    dispatch(closeModal())
   }
 
   async function handleSignIn() {
@@ -32,13 +33,13 @@ function AuthModal() {
 
   useEffect(() => {
     const userVar = onAuthStateChanged(auth, (currentUser) => {
+      console.log(currentUser);
       if (!currentUser) return;
       dispatch(
         setUser({
           email: currentUser.email,
         })
       );
-      console.log(currentUser);
       // handle redux actions
     });
 
