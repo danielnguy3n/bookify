@@ -1,5 +1,5 @@
-import Nav from "@/components/For-You/Nav";
-import Searchbar from "@/components/For-You/Searchbar";
+import Nav from "@/components/Global/Nav";
+import Searchbar from "@/components/Global/Searchbar";
 import { ReduxProvider } from "@/redux/provider";
 
 export default function UserLayout({

@@ -530,6 +530,10 @@ button:disabled {
   cursor: pointer;
 }
 
+.sidebar__link--wrapper:hover {
+  background-color: #f0efef;
+}
+
 .sidebar__link--line {
   width: 5px;
   height: 100%;
@@ -555,6 +559,10 @@ button:disabled {
 
 .no-link {
   cursor: not-allowed;
+}
+
+.no-link:hover {
+background-color: #f7faf9;
 }
 
 .wrapper {

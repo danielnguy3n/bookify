@@ -11,10 +11,12 @@ import { LuLogOut } from "react-icons/lu";
 import { setFontSize } from "@/redux/fontSizeSlice";
 import { openModal } from "@/redux/modalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import AuthModal from "../Global/AuthModal";
+import AuthModal from "./AuthModal";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { signOutUser } from "@/redux/userSlice";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface Props {
   audioNav: Boolean;
@@ -32,9 +34,12 @@ function Nav({ audioNav }: Props) {
   }
 
   async function handleSignOut() {
-    signOut(auth)
-    dispatch(signOutUser())
+    signOut(auth);
+    dispatch(signOutUser());
   }
+
+  const pathName = usePathname();
+  console.log(pathName.startsWith("/book"));
 
   return (
     <nav className="sidebar">
@@ -49,20 +54,28 @@ function Nav({ audioNav }: Props) {
       </div>
       <div className={`sidebar__wrapper ${audioNav && `audio__sidebar`}`}>
         <div className="sidebar__top">
-          <a href="" className="sidebar__link--wrapper">
-            <div className="sidebar__link--line active--tab"></div>
+          <Link href="/for-you" className="sidebar__link--wrapper">
+            <div
+              className={`sidebar__link--line ${
+                pathName.startsWith("/for-you") && `active--tab`
+              } `}
+            ></div>
             <div className="sidebar__link--icon">
               <AiOutlineHome />
             </div>
             <div className="sidebar__link--text">For You</div>
-          </a>
-          <a href="" className="sidebar__link--wrapper ">
-            <div className="sidebar__link--line"></div>
+          </Link>
+          <Link href="/library" className="sidebar__link--wrapper ">
+            <div
+              className={`sidebar__link--line ${
+                pathName.startsWith("/library") && `active--tab`
+              } `}
+            ></div>
             <div className="sidebar__link--icon">
               <BsBookmark />
             </div>
             <div className="sidebar__link--text">My Library</div>
-          </a>
+          </Link>
           <div className="sidebar__link--wrapper no-link">
             <div className="sidebar__link--line"></div>
             <div className="sidebar__link--icon">
@@ -117,13 +130,17 @@ function Nav({ audioNav }: Props) {
         </div>
 
         <div className="nav__bot">
-          <a href="" className="sidebar__link--wrapper ">
-            <div className="sidebar__link--line"></div>
+          <Link href="/settings" className="sidebar__link--wrapper">
+            <div
+              className={`sidebar__link--line ${
+                pathName.startsWith("/settings") && `active--tab`
+              } `}
+            ></div>
             <div className="sidebar__link--icon">
               <CiSettings />
             </div>
             <div className="sidebar__link--text">Settings</div>
-          </a>
+          </Link>
           <div className="sidebar__link--wrapper no-link">
             <div className="sidebar__link--line"></div>
             <div className="sidebar__link--icon">
@@ -132,10 +149,7 @@ function Nav({ audioNav }: Props) {
             <div className="sidebar__link--text">Help & Support</div>
           </div>
           {userEmail ? (
-            <div
-              className="sidebar__link--wrapper "
-              onClick={handleSignOut}
-            >
+            <div className="sidebar__link--wrapper " onClick={handleSignOut}>
               <div className="sidebar__link--line"></div>
               <div className="sidebar__link--icon">
                 <LuLogOut />

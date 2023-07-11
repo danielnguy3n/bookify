@@ -37,8 +37,6 @@ async function getBook(id: string) {
   const userEmail = useAppSelector((state) => state.user.email);
   const dispatch = useAppDispatch()
 
-  console.log(book?.imageLink)
-
   return (
     <div className="row">
       <div className="container">
