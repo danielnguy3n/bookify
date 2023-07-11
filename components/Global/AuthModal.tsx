@@ -19,6 +19,7 @@ function AuthModal() {
   const [signIn, setSignIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const userEmail = useAppSelector(state => state.user.email)
   const dispatch = useAppDispatch();
 
   async function handleSignUp() {
@@ -44,7 +45,7 @@ function AuthModal() {
     });
 
     return userVar;
-  }, []);
+  }, [userEmail]);
 
   return (
     <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>
