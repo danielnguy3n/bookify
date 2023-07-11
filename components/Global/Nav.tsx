@@ -26,6 +26,7 @@ function Nav({ audioNav }: Props) {
   const [activeTab, setActiveTab] = useState(1);
   const modalOpen = useAppSelector((state) => state.modals.modalOpen);
   const userEmail = useAppSelector((state) => state.user.email);
+  const pathName = usePathname();
   const dispatch = useAppDispatch();
 
   function switchTabs(tabNum: number, fontSize: number) {
@@ -37,9 +38,6 @@ function Nav({ audioNav }: Props) {
     signOut(auth);
     dispatch(signOutUser());
   }
-
-  const pathName = usePathname();
-  console.log(pathName.startsWith("/book"));
 
   return (
     <nav className="sidebar">
