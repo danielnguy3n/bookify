@@ -1602,6 +1602,24 @@ input[type="range"]:active::-moz-range-thumb {
   height: 28px;
 }
 
+.login__spinner {
+  width: 24px;
+  height: 24px;
+  animation: spin 1s infinite linear;
+}
+
+.dark--spinner {
+  color: #032b41;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg)
+  } 100% {
+    transform: rotate(360deg)
+  }
+}
+
 .library__title {
   font-weight: 700;
   font-size: 24px;

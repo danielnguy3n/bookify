@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
+import { ImSpinner8 } from "react-icons/im";
 import Google from "../../public/images/google.png";
 import { useEffect, useState, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
@@ -19,41 +20,47 @@ function AuthModal() {
   const [signIn, setSignIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("")
-  const userEmail = useAppSelector(state => state.user.email)
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState("");
+  const userEmail = useAppSelector((state) => state.user.email);
   const dispatch = useAppDispatch();
 
   async function handleSignUp() {
     try {
+      setLoading("form");
       await createUserWithEmailAndPassword(auth, email, password);
-      dispatch(closeModal())
+      dispatch(closeModal());
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message);
+      setLoading("");
     }
   }
 
   async function handleSignIn() {
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      dispatch(closeModal())
-    } catch(err: any) {
-      setError(err.message)
+      setLoading("form");
+      await signInWithEmailAndPassword(auth, email, password);
+      dispatch(closeModal());
+    } catch (err: any) {
+      setError(err.message);
+      setLoading("");
     }
   }
 
   async function guestSignIn() {
-    await signInWithEmailAndPassword(auth, 'guest@gmail.com', 'guest123');
-    dispatch(closeModal())
+    setLoading("guest");
+    await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
+    dispatch(closeModal());
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    signIn ? handleSignIn() : handleSignUp()
+    e.preventDefault();
+    signIn ? handleSignIn() : handleSignUp();
   }
 
   function toggleModal() {
-    setSignIn(!signIn)
-    setError("")
+    setSignIn(!signIn);
+    setError("");
   }
 
   useEffect(() => {
@@ -83,7 +90,13 @@ function AuthModal() {
                 <figure className="btn__icon">
                   <BsFillPersonFill />
                 </figure>
-                <div className="btn__text" onClick={guestSignIn}>Login as a Guest</div>
+                <div className="btn__text" onClick={guestSignIn}>
+                  {loading === "guest" ? (
+                    <ImSpinner8 className="login__spinner" />
+                  ) : (
+                    "Login as a Guest"
+                  )}
+                </div>
               </button>
               <div className="modal__separator">
                 <div className="modal__separator--text">or</div>
@@ -126,11 +139,19 @@ function AuthModal() {
             />
             {signIn ? (
               <button type="submit" className="btn">
-                Login
+                {loading === "form" ? (
+                  <ImSpinner8 className="login__spinner black--spinner" />
+                ) : (
+                  "Login"
+                )}
               </button>
             ) : (
               <button type="submit" className="btn">
-                Sign Up
+                {loading === "form" ? (
+                  <ImSpinner8 className="login__spinner black--spinner" />
+                ) : (
+                  "Sign Up"
+                )}
               </button>
             )}
           </form>
