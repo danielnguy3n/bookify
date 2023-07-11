@@ -1596,6 +1596,32 @@ input[type="range"]:active::-moz-range-thumb {
   height: 28px;
 }
 
+.library__title {
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #032b41;
+}
+
+.library__subtitle {
+  font-weight: 300;
+  margin-bottom: 16px;
+}
+
+.library__empty-row {
+  background-color: #f1f6f4;
+  padding: 32px;
+  margin: 0 auto 56px;
+  text-align: center;
+  max-width: fit-content;
+  border-radius: 12px;
+}
+
+.empty__title {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
 
 @media (max-width: 768px) {
   .landing__content {
