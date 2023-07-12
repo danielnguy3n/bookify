@@ -12,8 +12,9 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
-import { auth } from "@/firebase";
+import { auth, provider } from "@/firebase";
 import { setUser } from "@/redux/userSlice";
 
 function AuthModal() {
@@ -53,6 +54,17 @@ function AuthModal() {
     dispatch(closeModal());
   }
 
+  async function signInWithGoogle() {
+    try {
+      setLoading("google");
+      const signIn = await signInWithPopup(auth, provider);
+      dispatch(closeModal());
+    } catch (err: any) {
+      setError(err.message);
+      setLoading("");
+    }
+  }
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     signIn ? handleSignIn() : handleSignUp();
@@ -65,14 +77,13 @@ function AuthModal() {
 
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (currentUser) => {
-      console.log(currentUser);
+      // console.log(currentUser);
       if (!currentUser) return;
       dispatch(
         setUser({
           email: currentUser.email,
         })
       );
-      // handle redux actions
     });
 
     return authState;
@@ -105,7 +116,13 @@ function AuthModal() {
                 <div className="btn__icon btn__icon--google">
                   <Image src={Google} alt="google" width={24} height={24} />
                 </div>
-                <div className="btn__text">Login with Google</div>
+                <div className="btn__text" onClick={signInWithGoogle}>
+                  {loading === "google" ? (
+                    <ImSpinner8 className="login__spinner" />
+                  ) : (
+                    "Login with Google"
+                  )}
+                </div>
               </button>
             </>
           ) : (
@@ -116,7 +133,13 @@ function AuthModal() {
                 <div className="btn__icon btn__icon--google">
                   <Image src={Google} alt="google" width={24} height={24} />
                 </div>
-                <div className="btn__text">Sign Up With Google</div>
+                <div className="btn__text" onClick={signInWithGoogle}>
+                  {loading === "google" ? (
+                    <ImSpinner8 className="login__spinner" />
+                  ) : (
+                    "Sign Up with Google"
+                  )}
+                </div>
               </button>
             </>
           )}
