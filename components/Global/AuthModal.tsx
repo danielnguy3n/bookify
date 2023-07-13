@@ -9,12 +9,15 @@ import { useEffect, useState, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { closeModal } from "@/redux/modalSlice";
 import {
+  User,
+  UserCredential,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { auth, provider } from "@/firebase";
+import { auth, db, provider } from "@/firebase";
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { setUser } from "@/redux/userSlice";
 
 function AuthModal() {
@@ -26,10 +29,23 @@ function AuthModal() {
   const userEmail = useAppSelector((state) => state.user.email);
   const dispatch = useAppDispatch();
 
+  async function setData(email: string | null, uid: string) {
+    await setDoc(doc(db, "users", uid), {
+      uid: uid,
+      email: email
+    })
+
+    dispatch(setUser({
+      uid: uid,
+      email: email
+    }))
+  }
+
   async function handleSignUp() {
     try {
       setLoading("form");
-      await createUserWithEmailAndPassword(auth, email, password);
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      setData(user.email, user.uid)
       dispatch(closeModal());
     } catch (err: any) {
       setError(err.message);
@@ -40,7 +56,8 @@ function AuthModal() {
   async function handleSignIn() {
     try {
       setLoading("form");
-      await signInWithEmailAndPassword(auth, email, password);
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      setData(user.email, user.uid)
       dispatch(closeModal());
     } catch (err: any) {
       setError(err.message);
@@ -57,7 +74,8 @@ function AuthModal() {
   async function signInWithGoogle() {
     try {
       setLoading("google");
-      const signIn = await signInWithPopup(auth, provider);
+      const {user} = await signInWithPopup(auth, provider);
+      setData(user.email, user.uid)
       dispatch(closeModal());
     } catch (err: any) {
       setError(err.message);
@@ -74,20 +92,6 @@ function AuthModal() {
     setSignIn(!signIn);
     setError("");
   }
-
-  useEffect(() => {
-    const authState = onAuthStateChanged(auth, (currentUser) => {
-      // console.log(currentUser);
-      if (!currentUser) return;
-      dispatch(
-        setUser({
-          email: currentUser.email,
-        })
-      );
-    });
-
-    return authState;
-  }, [userEmail]);
 
   return (
     <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>

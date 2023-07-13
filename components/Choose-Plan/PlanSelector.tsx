@@ -4,11 +4,25 @@ import { useState } from "react";
 import AuthModal from "../Global/AuthModal";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { openModal } from "@/redux/modalSlice";
+import { createCheckoutSession } from "@/stripe/createCheckoutSession";
 
 function PlanSelector() {
   const [yearlyPlan, setYearlyPlan] = useState(true);
   const modalOpen = useAppSelector(state => state.modals.modalOpen)
   const dispatch = useAppDispatch()
+  const uid = useAppSelector(state => state.user.uid)
+  
+
+  function handleClick() {
+    console.log(uid)
+    if (uid) {
+      createCheckoutSession(uid)
+    } else {
+      dispatch(openModal())
+    }
+
+  }
+
 
   return (
     <>
@@ -42,7 +56,7 @@ function PlanSelector() {
         </div>
       </div>
       <div className="plan__card--cta">
-        <button className="btn" style={{ width: 300 }} onClick={() => dispatch(openModal())}>
+        <button className="btn" style={{ width: 300 }} onClick={() => handleClick()}>
           {yearlyPlan
             ? "Start Your Free 7-day Trial"
             : "Start Your First Month"}

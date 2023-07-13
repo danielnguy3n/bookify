@@ -34,7 +34,7 @@ function Nav({ audioNav }: Props) {
     dispatch(setFontSize(fontSize));
   }
 
-  async function handleSignOut() {
+  function handleSignOut() {
     signOut(auth);
     dispatch(signOutUser());
   }
@@ -147,7 +147,7 @@ function Nav({ audioNav }: Props) {
             <div className="sidebar__link--text">Help & Support</div>
           </div>
           {userEmail ? (
-            <div className="sidebar__link--wrapper " onClick={handleSignOut}>
+            <div className="sidebar__link--wrapper " onClick={() => handleSignOut()}>
               <div className="sidebar__link--line"></div>
               <div className="sidebar__link--icon">
                 <LuLogOut />
