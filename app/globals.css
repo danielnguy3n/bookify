@@ -464,6 +464,10 @@ button:disabled {
   margin: 0 auto;
 }
 
+.sidebar__logo img {
+  height: auto;
+}
+
 .sidebar__wrapper {
   display: flex;
   flex-direction: column;
@@ -784,6 +788,7 @@ background-color: #f7faf9;
   width: 172px;
   height: 172px;
   margin-bottom: 8px;
+  position: relative;
 }
 
 .book__title {

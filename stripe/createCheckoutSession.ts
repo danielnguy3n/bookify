@@ -2,10 +2,7 @@ import {
     DocumentData,
   addDoc,
   collection,
-  doc,
-  getDoc,
   onSnapshot,
-  setDoc,
 } from "firebase/firestore";
 import getStripe from "./initialiseStripe";
 import { db } from "@/firebase";

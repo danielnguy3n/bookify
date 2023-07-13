@@ -17,6 +17,7 @@ import { auth } from "@/firebase";
 import { signOutUser } from "@/redux/userSlice";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Logo from "../../public/images/logo.png"
 
 interface Props {
   audioNav: Boolean;
@@ -43,10 +44,10 @@ function Nav({ audioNav }: Props) {
     <nav className="sidebar">
       <div className="sidebar__logo">
         <Image
-          src="/images/logo.png"
+          src={Logo}
           alt="logo"
           width={160}
-          height={20}
+          height={40}
           className=""
         />
       </div>
