@@ -3,8 +3,6 @@ import DisplayBook from "./DisplayBook";
 import Controls from "./Controls";
 import ProgressBar from "./ProgressBar";
 import { useRef, useState } from "react";
-import { useAppDispatch } from "@/redux/store";
-import { setBookDuration } from "@/redux/bookSlice";
 
 interface Props {
   book?: Book;
