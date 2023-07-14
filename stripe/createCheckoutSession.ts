@@ -1,5 +1,5 @@
 import {
-    DocumentData,
+  DocumentData,
   addDoc,
   collection,
   onSnapshot,
@@ -14,17 +14,16 @@ export async function createCheckoutSession(uid: string, priceId: string) {
     collection(db, "users", uid, "checkout_sessions"),
     {
       price: priceId,
-      success_url: window.location.origin,
+      success_url: `${window.location.origin}/for-you`,
       cancel_url: `${window.location.origin}/choose-plan`,
     }
   );
 
   onSnapshot(checkoutSessionRef, async (snap: DocumentData) => {
-    const { sessionId }= snap.data();
+    const { sessionId } = snap.data();
     if (sessionId) {
       const stripe = await getStripe();
       stripe?.redirectToCheckout({ sessionId });
     }
   });
-
 }

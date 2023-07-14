@@ -11,12 +11,14 @@ import { auth } from "@/firebase";
 function Library() {
   const dispatch = useAppDispatch();
 
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | null>();
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      console.log(user);
-      setUser(user);
+      if (!user) {
+        setUser(null);
+      } else {
+        setUser(user);
+      }
     });
 
     return authState;

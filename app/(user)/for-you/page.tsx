@@ -24,9 +24,6 @@ export default async function ForYou() {
     suggestedData,
   ]);
 
-
- 
-
   return (
     <div className="row">
       <div className="container">
