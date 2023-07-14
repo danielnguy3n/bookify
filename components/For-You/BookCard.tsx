@@ -39,7 +39,7 @@ function BookCard({ book, premium }: Props) {
       <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData}></audio>
       {(premium === 'Basic' || !premium) && book.subscriptionRequired  && <div className="book--pill">Premium</div>}
       <figure className="book__image--wrapper">
-        <Image src={book.imageLink} alt="" className="book__img" fill={true} sizes="(min-width: 400px) 100vw"/>
+        <Image src={book.imageLink} alt="" className="book__img" fill={true} sizes="100vw"/>
       </figure>
       <div className="book__title">{book.title}</div>
       <div className="book__author">{book.author}</div>

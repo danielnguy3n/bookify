@@ -1,10 +1,6 @@
 
 import BookRow from "@/components/For-You/BookRow";
 import SelectedBook from "@/components/For-You/SelectedBook";
-import { auth } from "@/firebase";
-import usePremiumStatus from "@/stripe/usePremiumStatus";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
 
 async function getBooks(status: string) {
   const res = await fetch(

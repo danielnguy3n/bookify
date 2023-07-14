@@ -3,13 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 interface SliceType {
   email: string
   uid: string
-  premium: string
 }
 
 const initialState: SliceType = {
     email: '',
     uid: '',
-    premium: ''
 }
 
 const userSlice = createSlice({
@@ -24,13 +22,9 @@ const userSlice = createSlice({
     signOutUser: (state) => {
         state.email = ''
     },
-
-    setPremium: (state, action) => {
-      state.premium = action.payload
-    }
   }
 });
 
-export const { setUser, signOutUser, setPremium } = userSlice.actions
+export const { setUser, signOutUser } = userSlice.actions
 
 export default userSlice.reducer

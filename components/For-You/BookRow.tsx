@@ -6,8 +6,6 @@ import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { setPremium } from "@/redux/userSlice";
 
 interface Props {
   data: Book[];
@@ -47,7 +45,6 @@ function BookRow({ data }: Props) {
   // }
 
   const [user, setUser] = useState<User | null>();
-  const dispatch = useAppDispatch()
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (user) => {
       if (!user) {

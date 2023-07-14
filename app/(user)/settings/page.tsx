@@ -14,7 +14,6 @@ function Settings() {
   const [user, setUser] = useState<User | null>();
   const dispatch = useAppDispatch();
   const premiumStatus = usePremiumStatus(auth.currentUser);
-  console.log(premiumStatus)
 
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (user) => {
