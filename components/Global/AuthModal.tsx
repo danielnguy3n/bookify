@@ -5,19 +5,16 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import { ImSpinner8 } from "react-icons/im";
 import Google from "../../public/images/google.png";
-import { useEffect, useState, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { closeModal } from "@/redux/modalSlice";
 import {
-  User,
-  UserCredential,
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, provider } from "@/firebase";
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { setUser } from "@/redux/userSlice";
 
 function AuthModal() {
@@ -39,6 +36,7 @@ function AuthModal() {
       uid: uid,
       email: email
     }))
+
   }
 
   async function handleSignUp() {

@@ -1,8 +1,11 @@
 "use client";
 
+import { auth } from "@/firebase";
 import { openModal } from "@/redux/modalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { Book } from "@/typings";
+import { User, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -24,6 +27,12 @@ async function getBook(id: string) {
 function bookPage({ params }: { params: { id: string } }) {
   const bookId: string = params.id;
   const [book, setBook] = useState<Book>();
+  const [user, setUser] = useState<User>()
+
+  const email = useAppSelector((state) => state.user.email);
+
+  const premiumStatus = usePremiumStatus(auth.currentUser)
+  console.log('Check premium status:', premiumStatus)
 
   async function fetchBook() {
     const data = await getBook(bookId);
@@ -32,13 +41,19 @@ function bookPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchBook();
+    const authState = onAuthStateChanged(auth, (user) => {
+      if (!user) return
+      console.log(user)
+      setUser(user)
+    })
+    return authState
   }, []);
 
-  const userEmail = useAppSelector((state) => state.user.email);
   const dispatch = useAppDispatch();
 
   const [bookDuration, setBookDuration] = useState<string>()
   const audioRef = useRef<HTMLAudioElement>(null)
+
   const onLoadedMetaData = () => {
     if (audioRef.current) {
       const duration = audioRef.current.duration
@@ -61,7 +76,7 @@ function bookPage({ params }: { params: { id: string } }) {
           <div className="inner__book">
             <div className="book-info__title">{book?.title} 
             {
-              book?.subscriptionRequired && ' (Premium)'
+              premiumStatus === 'Basic' || !premiumStatus && ' (Premium)'
             }
             </div>
             <div className="book-info__author">{book?.author}</div>
@@ -99,7 +114,7 @@ function bookPage({ params }: { params: { id: string } }) {
               </div>
             </div>
             <div className="book-info__button-wrapper">
-              {userEmail ? (
+              {user ? (
                 <>
                   <Link href={`/player/${bookId}`}>
                     <button className="book-info__button">

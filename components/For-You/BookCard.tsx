@@ -1,3 +1,5 @@
+import { auth } from "@/firebase";
+import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { Book } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +14,10 @@ interface Props {
 function BookCard({ book }: Props) {
   const [bookDuration, setBookDuration] = useState<string>('00:00')
   const audioRef = useRef<HTMLAudioElement>(null)
+  const premiumStatus = ''
+  // if (auth.currentUser) {
+  //   setPremiumStatus(usePremiumStatus(auth.currentUser))
+  // }
   
   const onLoadedData = () => {
     if (audioRef.current) {
@@ -34,7 +40,7 @@ function BookCard({ book }: Props) {
   return (
     <Link href={`/book/${book.id}`} className="book--wrapper">
       <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData}></audio>
-      {book.subscriptionRequired && <div className="book--pill">Premium</div>}
+      {/* {(premiumStatus === 'Basic' || !premiumStatus) && book.subscriptionRequired  && <div className="book--pill">Premium</div>} */}
       <figure className="book__image--wrapper">
         <Image src={book.imageLink} alt="" className="book__img" fill={true} sizes="(min-width: 400px) 100vw"/>
       </figure>

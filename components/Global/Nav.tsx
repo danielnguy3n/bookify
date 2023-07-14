@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineHome, AiOutlineQuestionCircle } from "react-icons/ai";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { RiBallPenLine, RiFontSize } from "react-icons/ri";
@@ -12,12 +12,12 @@ import { setFontSize } from "@/redux/fontSizeSlice";
 import { openModal } from "@/redux/modalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import AuthModal from "./AuthModal";
-import { signOut } from "firebase/auth";
+import { User, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { signOutUser } from "@/redux/userSlice";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Logo from "../../public/images/logo.png"
+import Logo from "../../public/images/logo.png";
 
 interface Props {
   audioNav: Boolean;
@@ -26,7 +26,7 @@ interface Props {
 function Nav({ audioNav }: Props) {
   const [activeTab, setActiveTab] = useState(1);
   const modalOpen = useAppSelector((state) => state.modals.modalOpen);
-  const userEmail = useAppSelector((state) => state.user.email);
+  const [user, setUser] = useState<User | null>();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
 
@@ -36,20 +36,25 @@ function Nav({ audioNav }: Props) {
   }
 
   function handleSignOut() {
+    setUser(null)
     signOut(auth);
     dispatch(signOutUser());
   }
 
+  useEffect(() => {
+    const authState = onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+      console.log(user);
+      setUser(user);
+    });
+
+    return authState
+  }, []);
+
   return (
     <nav className="sidebar">
       <div className="sidebar__logo">
-        <Image
-          src={Logo}
-          alt="logo"
-          width={160}
-          height={40}
-          className=""
-        />
+        <Image src={Logo} alt="logo" width={160} height={40} className="" />
       </div>
       <div className={`sidebar__wrapper ${audioNav && `audio__sidebar`}`}>
         <div className="sidebar__top">
@@ -147,8 +152,11 @@ function Nav({ audioNav }: Props) {
             </div>
             <div className="sidebar__link--text">Help & Support</div>
           </div>
-          {userEmail ? (
-            <div className="sidebar__link--wrapper " onClick={() => handleSignOut()}>
+          {user ? (
+            <div
+              className="sidebar__link--wrapper "
+              onClick={() => handleSignOut()}
+            >
               <div className="sidebar__link--line"></div>
               <div className="sidebar__link--icon">
                 <LuLogOut />

@@ -1,4 +1,5 @@
 import { Book } from "@/typings";
+import Image from "next/image";
 import { BsFillPlayCircleFill } from "react-icons/bs";
 
 interface Props {
@@ -6,16 +7,20 @@ interface Props {
 }
 
 function SelectedBook({ data }: Props) {
-    const book = data[0]
+  const book = data[0];
   return (
     <a href="" className="selected__book">
-      <div className="selected__book--subtitle">
-        {book.subTitle}
-      </div>
+      <div className="selected__book--subtitle">{book.subTitle}</div>
       <div className="selected__book--divider"></div>
       <div className="selected__book--content">
-        <figure className="book__image--wrapper">
-          <img src={book.imageLink} alt="" className="selected__book--img" />
+        <figure className="selected-book__image--wrapper">
+          <Image
+            src={book.imageLink}
+            alt=""
+            className="book--img"
+            width={140}
+            height={140}
+          />
         </figure>
         <div className="selected__book--text">
           <div className="selected__book--title">{book.title}</div>

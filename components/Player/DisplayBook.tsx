@@ -1,4 +1,5 @@
 import { Book } from "@/typings";
+import Image from "next/image";
 import { Dispatch, RefObject, SetStateAction } from "react";
 
 interface Props {
@@ -21,7 +22,15 @@ function DisplayBook({ book, audioRef, progressBarRef, setDuration }: Props) {
       <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData} />
       <figure className="audio__img--mask">
         <figure className="audio__img--wrapper">
-          <img src={book?.imageLink} alt="" className="audio__img" />
+          {book?.imageLink && (
+            <Image
+              src={book?.imageLink}
+              alt=""
+              className="audio__img"
+              width={48}
+              height={48}
+            />
+          )}
         </figure>
       </figure>
       <div className="audio__text">
