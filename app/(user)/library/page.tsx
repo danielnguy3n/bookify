@@ -4,15 +4,28 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import LoginImg from "../../../public/images/login.png";
 import Image from "next/image";
 import { openModal } from "@/redux/modalSlice";
+import { useEffect, useState } from "react";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
 
 function Library() {
-  const userEmail = useAppSelector((state) => state.user.email);
   const dispatch = useAppDispatch();
+
+  const [user, setUser] = useState<User>();
+  useEffect(() => {
+    const authState = onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+      console.log(user);
+      setUser(user);
+    });
+
+    return authState;
+  }, []);
 
   return (
     <div className="row">
       <div className="container">
-        {userEmail ? (
+        {user ? (
           <>
             <div className="library__title">Saved Books</div>
             <div className="library__subtitle">0 items</div>

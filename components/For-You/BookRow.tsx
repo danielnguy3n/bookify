@@ -1,7 +1,11 @@
-'use client'
+"use client";
 
 import { Book } from "@/typings";
 import BookCard from "./BookCard";
+import usePremiumStatus from "@/stripe/usePremiumStatus";
+import { useEffect, useState } from "react";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
 
 interface Props {
   data: Book[];
@@ -39,8 +43,20 @@ function BookRow({ data }: Props) {
   //   }
 
   // }
-  ;
 
+  const [user, setUser] = useState<User>();
+  useEffect(() => {
+    const authState = onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+      console.log(user);
+      setUser(user);
+    });
+
+    return authState;
+  }, []);
+
+  const premium = usePremiumStatus(auth.currentUser);
+  
   return (
     <div
       // ref={rowRef}
@@ -51,7 +67,7 @@ function BookRow({ data }: Props) {
       className={`for-you__recommended--books`}
     >
       {data.map((book) => (
-        <BookCard key={book.id} book={book} />
+        <BookCard key={book.id} {...{ book, premium }} />
       ))}
     </div>
   );

@@ -9,15 +9,12 @@ import { HiOutlineClock } from "react-icons/hi";
 
 interface Props {
   book: Book;
+  premium: string | null;
 }
 
-function BookCard({ book }: Props) {
+function BookCard({ book, premium }: Props) {
   const [bookDuration, setBookDuration] = useState<string>('00:00')
   const audioRef = useRef<HTMLAudioElement>(null)
-  const premiumStatus = ''
-  // if (auth.currentUser) {
-  //   setPremiumStatus(usePremiumStatus(auth.currentUser))
-  // }
   
   const onLoadedData = () => {
     if (audioRef.current) {
@@ -40,7 +37,7 @@ function BookCard({ book }: Props) {
   return (
     <Link href={`/book/${book.id}`} className="book--wrapper">
       <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData}></audio>
-      {/* {(premiumStatus === 'Basic' || !premiumStatus) && book.subscriptionRequired  && <div className="book--pill">Premium</div>} */}
+      {(premium === 'Basic' || !premium) && book.subscriptionRequired  && <div className="book--pill">Premium</div>}
       <figure className="book__image--wrapper">
         <Image src={book.imageLink} alt="" className="book__img" fill={true} sizes="(min-width: 400px) 100vw"/>
       </figure>
