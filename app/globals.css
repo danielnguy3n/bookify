@@ -659,7 +659,7 @@ background-color: #f7faf9;
   top: 80px;
   width: 440px;
   max-height: 640px;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 9999;
   padding: 16px;
 }
@@ -1793,6 +1793,10 @@ input[type="range"]:active::-moz-range-thumb {
 .settings__login--btn {
   width: 180px;
   height: 40px;
+}
+
+.skeleton-box {
+  background-color: #e0e0e0;
 }
 
 @media (max-width: 768px) {

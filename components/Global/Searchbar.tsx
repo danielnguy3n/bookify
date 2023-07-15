@@ -2,9 +2,11 @@
 
 import { Book } from "@/typings";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { HiMagnifyingGlass, HiOutlineClock } from "react-icons/hi2";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 import SearchResult from "./SearchResult";
 import { IoMdClose } from "react-icons/io";
+import Skeleton from "../UI/Skeleton";
+import useDebounce from "./useDebounce";
 
 async function fetchResults(search: string | undefined) {
   if (!search) return;
@@ -15,23 +17,31 @@ async function fetchResults(search: string | undefined) {
 }
 
 function Searchbar() {
-  const [results, setResults] = useState<Book[]>();
-  const [search, setSearch] = useState<string>();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [results, setResults] = useState<Book[] | null>();
+  const [input, setInput] = useState<string>('');
 
-  async function getResults() {
-    const data = await fetchResults(search);
-    setTimeout(() => {
+  const debouncedInput = useDebounce(input, 300);
+
+  const [searchLoading, setSearchLoading] = useState<Boolean | null>(null);
+
+  async function getResults(input: string | undefined) {
+    const data = await fetchResults(input);
+    if (data && data.length === 0) {
+      setResults(null);
+    } else {
       setResults(data);
-    }, 300);
+    }
+    setSearchLoading(false);
   }
 
   useEffect(() => {
-    getResults();
-  }, [search]);
+    getResults(debouncedInput);
+
+  }, [debouncedInput]);
 
   function handleInput(e: ChangeEvent<HTMLInputElement>) {
-    setSearch(e.target.value);
+    setSearchLoading(true);
+    setInput(e.target.value);
   }
 
   return (
@@ -43,27 +53,43 @@ function Searchbar() {
             <div className="search__input--wrapper">
               <input
                 type="text"
-                value={search}
+                value={input}
                 placeholder="Search for books"
                 className="search__input"
                 onChange={(e) => handleInput(e)}
-                ref={inputRef}
               />
               <div className="search__icon">
-                {search ? (
+                {input ? (
                   <IoMdClose
-                    onClick={() => setSearch("")}
+                    onClick={() => setInput("")}
                     className="search__icon--pointer"
                   />
                 ) : (
                   <HiMagnifyingGlass />
                 )}
               </div>
-              <div className="search__results--wrapper">
-                {results?.map((result) => (
-                  <SearchResult key={result.id} result={result} />
+              {input &&
+                (searchLoading ? (
+                  <>
+                    <div className="search__results--wrapper">
+                      <Skeleton width={`100%`} height={114} marginBottom={8} />
+                      <Skeleton width={`100%`} height={114} marginBottom={8} />
+                      <Skeleton width={`100%`} height={114} marginBottom={8} />
+                      <Skeleton width={`100%`} height={114} marginBottom={8} />
+                      <Skeleton width={`100%`} height={114} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="search__results--wrapper">
+                      {results
+                        ? results?.map((result) => (
+                            <SearchResult key={result.id} result={result} />
+                          ))
+                        : "No Books Found"}
+                    </div>
+                  </>
                 ))}
-              </div>
             </div>
           </div>
           <div className="sidebar__toggle--btn"></div>

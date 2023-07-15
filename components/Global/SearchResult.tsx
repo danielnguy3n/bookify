@@ -1,24 +1,36 @@
 import { Book } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { HiOutlineClock } from "react-icons/hi2";
 
-function SearchResult({ result }: { result: Book }) {
+interface Props {
+  result: Book;
+}
+
+function SearchResult({ result }: Props) {
   const [bookDuration, setBookDuration] = useState<string>("00:00");
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const onLoadedData = () => {
     if (audioRef.current) {
       const duration = audioRef.current.duration;
-      const minutes = Math.floor(duration / 60);
-      const seconds = Math.floor(duration % 60);
+      if (!isNaN(duration)) {
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
 
-      const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
-      const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-      const durationString = `${formatMinutes}:${formatSeconds}`;
+        const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+        const durationString = `${formatMinutes}:${formatSeconds}`;
 
-      setBookDuration(durationString);
+        setBookDuration(durationString);
+      }
     }
   };
 
@@ -28,7 +40,11 @@ function SearchResult({ result }: { result: Book }) {
 
   return (
     <Link href={`book/${result.id}`} className="search__result">
-      <audio src={result?.audioLink} ref={audioRef} onLoadedData={onLoadedData}></audio>
+      <audio
+        src={result?.audioLink}
+        ref={audioRef}
+        onLoadedData={onLoadedData}
+      ></audio>
       <figure className="search__img--wrapper">
         <Image
           src={result.imageLink}
