@@ -9,9 +9,11 @@ import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
 import usePremiumStatus from "@/stripe/usePremiumStatus";
 import Link from "next/link";
+import { ImSpinner8 } from "react-icons/im";
 
 function Settings() {
   const [user, setUser] = useState<User | null>();
+  const [loading, setLoading] = useState<Boolean>(false)
   const dispatch = useAppDispatch();
   const premiumStatus = usePremiumStatus(auth.currentUser);
 
@@ -38,8 +40,12 @@ function Settings() {
               <div className="settings__desc">{premiumStatus}</div>
               {premiumStatus === "Basic" && (
                 <Link href={`/choose-plan`}>
-                  <button className="btn settings__btn">
-                    Upgrade to Premium
+                  <button className="btn settings__btn" onClick={() => setLoading(true)} disabled={!!loading}>
+                  {loading ? (
+                    <ImSpinner8 className="login__spinner" />
+                  ) : (
+                    "Upgrade to Premium"
+                  )}
                   </button>
                 </Link>
               )}

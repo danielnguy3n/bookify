@@ -14,7 +14,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, provider } from "@/firebase";
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from "firebase/firestore";
 import { setUser } from "@/redux/userSlice";
 
 function AuthModal() {
@@ -29,21 +29,26 @@ function AuthModal() {
   async function setData(email: string | null, uid: string) {
     await setDoc(doc(db, "users", uid), {
       uid: uid,
-      email: email
-    })
+      email: email,
+    });
 
-    dispatch(setUser({
-      uid: uid,
-      email: email
-    }))
-
+    dispatch(
+      setUser({
+        uid: uid,
+        email: email,
+      })
+    );
   }
 
   async function handleSignUp() {
     try {
       setLoading("form");
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      setData(user.email, user.uid)
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      setData(user.email, user.uid);
       dispatch(closeModal());
     } catch (err: any) {
       setError(err.message);
@@ -55,7 +60,7 @@ function AuthModal() {
     try {
       setLoading("form");
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      setData(user.email, user.uid)
+      setData(user.email, user.uid);
       dispatch(closeModal());
     } catch (err: any) {
       setError(err.message);
@@ -72,8 +77,8 @@ function AuthModal() {
   async function signInWithGoogle() {
     try {
       setLoading("google");
-      const {user} = await signInWithPopup(auth, provider);
-      setData(user.email, user.uid)
+      const { user } = await signInWithPopup(auth, provider);
+      setData(user.email, user.uid);
       dispatch(closeModal());
     } catch (err: any) {
       setError(err.message);
@@ -99,11 +104,15 @@ function AuthModal() {
             <>
               <div className="modal__title">Login to Summarist</div>
               {error && <div className="modal__error">{error}</div>}
-              <button className="btn btn__login--guest">
+              <button
+                className="btn btn__login--guest"
+                onClick={guestSignIn}
+                disabled={loading === "guest"}
+              >
                 <figure className="btn__icon">
                   <BsFillPersonFill />
                 </figure>
-                <div className="btn__text" onClick={guestSignIn}>
+                <div className="btn__text">
                   {loading === "guest" ? (
                     <ImSpinner8 className="login__spinner" />
                   ) : (
@@ -114,11 +123,15 @@ function AuthModal() {
               <div className="modal__separator">
                 <div className="modal__separator--text">or</div>
               </div>
-              <button className="btn btn__login--google">
+              <button
+                className="btn btn__login--google"
+                onClick={signInWithGoogle}
+                disabled={loading === "google"}
+              >
                 <div className="btn__icon btn__icon--google">
                   <Image src={Google} alt="google" width={24} height={24} />
                 </div>
-                <div className="btn__text" onClick={signInWithGoogle}>
+                <div className="btn__text">
                   {loading === "google" ? (
                     <ImSpinner8 className="login__spinner" />
                   ) : (
@@ -131,11 +144,15 @@ function AuthModal() {
             <>
               <div className="modal__title">Sign up Summarist</div>
               {error && <div className="modal__error">{error}</div>}
-              <button className="btn btn__login--google">
+              <button
+                className="btn btn__login--google"
+                onClick={signInWithGoogle}
+                disabled={loading === "google"}
+              >
                 <div className="btn__icon btn__icon--google">
                   <Image src={Google} alt="google" width={24} height={24} />
                 </div>
-                <div className="btn__text" onClick={signInWithGoogle}>
+                <div className="btn__text">
                   {loading === "google" ? (
                     <ImSpinner8 className="login__spinner" />
                   ) : (
@@ -162,23 +179,14 @@ function AuthModal() {
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            {signIn ? (
-              <button type="submit" className="btn">
-                {loading === "form" ? (
-                  <ImSpinner8 className="login__spinner black--spinner" />
-                ) : (
-                  "Login"
-                )}
-              </button>
-            ) : (
-              <button type="submit" className="btn">
-                {loading === "form" ? (
-                  <ImSpinner8 className="login__spinner black--spinner" />
-                ) : (
-                  "Sign Up"
-                )}
-              </button>
-            )}
+
+            <button type="submit" className="btn" disabled={loading === "form"}>
+              {loading === "form" ? (
+                <ImSpinner8 className="login__spinner black--spinner" />
+              ) : (
+                <> {signIn ? "Login" : "Sign Up"} </>
+              )}
+            </button>
           </form>
         </div>
         <div className="modal__forgot-password">Forgot your password?</div>

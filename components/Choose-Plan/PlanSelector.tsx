@@ -52,19 +52,15 @@ function PlanSelector() {
     fetchProducts();
     const authState = onAuthStateChanged(auth, (user) => {
       if (!user) return;
-      console.log(user);
       setUser(user);
     });
     return authState;
   }, []);
 
-  // console.log('products',products, 'prices', prices, 'priceID', priceIds)
 
   function handleClick() {
     console.log(user?.uid);
     if (user?.uid) {
-      // "price_1NTI0VAWGUZnUEjjoROKUfTy" 9.99 0
-      // price_1NTI1SAWGUZnUEjj4tLyD37p 99.99 1
       if (yearlyPlan) {
         createCheckoutSession(user?.uid, priceIds[1]);
       } else {
@@ -126,6 +122,7 @@ function PlanSelector() {
               className="btn"
               style={{ width: 300 }}
               onClick={() => handleClick()}
+              disabled={loading === 'btn'}
             >
               {loading === "btn" ? (
                 <ImSpinner8 className="login__spinner black--spinner" />
