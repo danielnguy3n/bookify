@@ -66,7 +66,7 @@ function BookRow({ data }: Props) {
       // onMouseUp={(event) => handleMouseUp(event)}
       // onMouseMove={(event) => handleMouseMove(event)}
       // className={`for-you__recommended--books ${isDown && `active`}`}
-      className={`for-you__recommended--books`}
+      className='for-you__recommended--books'
     >
       {data.map((book) => (
         <BookCard key={book.id} {...{ book, premium }} />

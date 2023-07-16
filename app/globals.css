@@ -1220,6 +1220,16 @@ background-color: #f7faf9;
   appearance: none;
 }
 
+.plan--spinner.player--spinner {
+  width: 64px;
+  height: 64px;
+}
+
+.spinner--wrapper.player {
+  height: calc(100vh - 160px);
+  overflow: hidden;
+}
+
 /* =========================
 Custom Input range 
 =============================*/
@@ -1731,6 +1741,10 @@ input[type="range"]:active::-moz-range-thumb {
   text-align: center;
   max-width: fit-content;
   border-radius: 12px;
+}
+
+.library__row {
+  margin-left: -12px;
 }
 
 .empty__title {

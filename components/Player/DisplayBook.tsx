@@ -1,20 +1,31 @@
 import { Book } from "@/typings";
 import Image from "next/image";
 import { Dispatch, RefObject, SetStateAction } from "react";
+import Skeleton from "../UI/Skeleton";
 
 interface Props {
   book?: Book;
   audioRef: RefObject<HTMLAudioElement>;
   progressBarRef: RefObject<HTMLInputElement>;
   setDuration: Dispatch<SetStateAction<number>>;
+  setLoading: Dispatch<SetStateAction<Boolean>>;
+  loading: Boolean;
 }
 
-function DisplayBook({ book, audioRef, progressBarRef, setDuration }: Props) {
+function DisplayBook({
+  book,
+  audioRef,
+  progressBarRef,
+  setDuration,
+  loading,
+  setLoading,
+}: Props) {
   const onLoadedData = () => {
     const seconds = audioRef.current!.duration;
     setDuration(seconds);
     const strSeconds: string = seconds.toString();
     progressBarRef.current!.max = strSeconds;
+    setLoading(false);
   };
 
   return (
@@ -22,20 +33,35 @@ function DisplayBook({ book, audioRef, progressBarRef, setDuration }: Props) {
       <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData} />
       <figure className="audio__img--mask">
         <figure className="audio__img--wrapper">
-          {book?.imageLink && (
-            <Image
-              src={book?.imageLink}
-              alt=""
-              className="audio__img"
-              width={48}
-              height={48}
-            />
+          {loading ? (
+            <>
+              <Skeleton width={48} height={48} />
+            </>
+          ) : (
+            book?.imageLink && (
+              <Image
+                src={book?.imageLink}
+                alt=""
+                className="audio__img"
+                width={48}
+                height={48}
+              />
+            )
           )}
         </figure>
       </figure>
       <div className="audio__text">
-        <div className="audio__title">{book?.title}</div>
-        <div className="audio__author">{book?.author}</div>
+        {loading ? (
+          <>
+            <Skeleton width={50} height={16} marginBottom={8} />
+            <Skeleton width={100} height={16} />
+          </>
+        ) : (
+          <>
+            <div className="audio__title">{book?.title}</div>
+            <div className="audio__author">{book?.author}</div>
+          </>
+        )}
       </div>
     </div>
   );

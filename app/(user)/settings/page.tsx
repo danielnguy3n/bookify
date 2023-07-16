@@ -10,10 +10,12 @@ import { auth } from "@/firebase";
 import usePremiumStatus from "@/stripe/usePremiumStatus";
 import Link from "next/link";
 import { ImSpinner8 } from "react-icons/im";
+import Skeleton from "@/components/UI/Skeleton";
 
 function Settings() {
   const [user, setUser] = useState<User | null>();
-  const [loading, setLoading] = useState<Boolean>(false)
+  const [loadingSpinner, setLoadingSpinner] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<Boolean>(true);
   const dispatch = useAppDispatch();
   const premiumStatus = usePremiumStatus(auth.currentUser);
 
@@ -24,6 +26,7 @@ function Settings() {
       } else {
         setUser(user);
       }
+      setLoading(false);
     });
 
     return authState;
@@ -33,19 +36,31 @@ function Settings() {
     <div className="row">
       <div className="container">
         <div className="settings__title">Settings</div>
-        {user ? (
+        { loading ? 
+          <>
+            <Skeleton width={160} height={24} marginBottom={12} />
+            <Skeleton width={280} height={24} marginBottom={12} />
+            <br />
+            <Skeleton width={160} height={24} marginBottom={12} />
+            <Skeleton width={280} height={24} marginBottom={12} />
+          </> : <>
+          {user ? (
           <>
             <div className="settings__content">
               <div className="settings__subtitle">Your Subscription Plan</div>
               <div className="settings__desc">{premiumStatus}</div>
               {premiumStatus === "Basic" && (
                 <Link href={`/choose-plan`}>
-                  <button className="btn settings__btn" onClick={() => setLoading(true)} disabled={!!loading}>
-                  {loading ? (
-                    <ImSpinner8 className="login__spinner" />
-                  ) : (
-                    "Upgrade to Premium"
-                  )}
+                  <button
+                    className="btn settings__btn"
+                    onClick={() => setLoadingSpinner(true)}
+                    disabled={!!loadingSpinner}
+                  >
+                    {loadingSpinner ? (
+                      <ImSpinner8 className="login__spinner" />
+                    ) : (
+                      "Upgrade to Premium"
+                    )}
                   </button>
                 </Link>
               )}
@@ -73,6 +88,9 @@ function Settings() {
             </div>
           </>
         )}
+          </>
+        }
+        
       </div>
     </div>
   );

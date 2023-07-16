@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import { AiFillFileText, AiFillBulb, AiFillAudio } from "react-icons/ai";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
@@ -9,8 +11,14 @@ import Statistic from "@/components/Home/Statistic";
 import Review from "@/components/Home/Review";
 import Numbers from "@/components/Home/Numbers";
 import Footer from "@/components/Home/Footer";
+import AuthModal from "@/components/Global/AuthModal";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { openModal } from "@/redux/modalSlice";
 
 export default function Home() {
+  const dispatch = useAppDispatch()
+  const modalOpen = useAppSelector(state => state.modals.modalOpen)
+
   return (
     <>
       <nav className="nav">
@@ -43,7 +51,8 @@ export default function Home() {
                   <br className="remove--tablet" />
                   and even people who don’t like to read.
                 </div>
-                <button className="btn home__cta--btn">Login</button>
+                <button className="btn home__cta--btn" onClick={() => dispatch(openModal())}>Login</button>
+                 {modalOpen && <AuthModal/>}
               </div>
               <figure className="landing__image--mask">
                 <Image
