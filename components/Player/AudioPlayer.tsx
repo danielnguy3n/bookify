@@ -2,7 +2,10 @@ import { Book } from "@/typings";
 import DisplayBook from "./DisplayBook";
 import Controls from "./Controls";
 import ProgressBar from "./ProgressBar";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/firebase";
+import { User, onAuthStateChanged } from "firebase/auth";
 
 interface Props {
   book?: Book;
@@ -15,11 +18,33 @@ function AudioPlayer({ book, setLoading, loading }: Props) {
   const progressBarRef = useRef<HTMLInputElement>(null);
   const [timeProgress, setTimeProgress] = useState<number | undefined>(0)
   const [duration, setDuration] = useState<number>(0)
+  const [audioFinished, setAudioFinished] = useState<Boolean>(false)
+  const [isPlaying, setIsPlaying] = useState<Boolean>(false);
+  const [user, setUser] = useState<User>()
   
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) return
+      setUser(user)
+    })
+  }, [])
+
+  async function onEnded() {
+    if (user) {
+      await setDoc(doc(db, "users", user.uid, "myFinishedLibrary", book!.id), {...book})
+    }
+
+    if (audioRef) {
+      audioRef.current!.currentTime = 0
+      setIsPlaying(false)
+    }
+    
+  }
+
   return (
     <div className="audio__wrapper">
-      <DisplayBook {...{book, audioRef, progressBarRef, setDuration, setLoading, loading}} />
-      <Controls {...{audioRef, progressBarRef, duration, setTimeProgress}} />
+      <DisplayBook {...{book, audioRef, progressBarRef, setDuration, setLoading, loading, onEnded}} />
+      <Controls {...{audioRef, progressBarRef, duration, setTimeProgress, isPlaying, setIsPlaying}} />
       <ProgressBar {...{progressBarRef, audioRef, timeProgress, duration}} />
     </div>
   );

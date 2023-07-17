@@ -10,6 +10,7 @@ interface Props {
   setDuration: Dispatch<SetStateAction<number>>;
   setLoading: Dispatch<SetStateAction<Boolean>>;
   loading: Boolean;
+  onEnded: Function;
 }
 
 function DisplayBook({
@@ -19,6 +20,7 @@ function DisplayBook({
   setDuration,
   loading,
   setLoading,
+  onEnded
 }: Props) {
   const onLoadedData = () => {
     const seconds = audioRef.current!.duration;
@@ -30,7 +32,7 @@ function DisplayBook({
 
   return (
     <div className="audio__track--wrapper">
-      <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData} />
+      <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData} onEnded={() => onEnded()}  />
       <figure className="audio__img--mask">
         <figure className="audio__img--wrapper">
           {loading ? (

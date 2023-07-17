@@ -23,7 +23,6 @@ function Player({ params }: { params: { id: string } }) {
   async function fetchBook() {
     const data = await getBook(bookId);
     setBook(data);
-    setLoading(false);
   }
 
   useEffect(() => {

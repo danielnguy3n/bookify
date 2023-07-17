@@ -1,4 +1,12 @@
-import { RefObject, useEffect, useRef, useState, useCallback, SetStateAction, Dispatch } from "react";
+import {
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  SetStateAction,
+  Dispatch,
+} from "react";
 import { GrBackTen, GrForwardTen } from "react-icons/gr";
 import { IoPauseSharp, IoPlaySharp } from "react-icons/io5";
 
@@ -7,32 +15,39 @@ interface Props {
   progressBarRef: RefObject<HTMLInputElement>;
   duration: number;
   setTimeProgress: Dispatch<SetStateAction<number | undefined>>;
+  isPlaying: Boolean;
+  setIsPlaying: Dispatch<SetStateAction<Boolean>>;
 }
 
-function Controls({ audioRef, progressBarRef, duration, setTimeProgress }: Props) {
-  const [isPlaying, setIsPlaying] = useState(false);
+function Controls({
+  audioRef,
+  progressBarRef,
+  duration,
+  setTimeProgress,
+  isPlaying,
+  setIsPlaying,
+}: Props) {
   const playAnimationRef = useRef<number>();
 
   const repeat = useCallback(() => {
-    const currentTime = audioRef.current!.currentTime
-    setTimeProgress(currentTime)
-    const currentTimeText: string = currentTime.toString()
-    progressBarRef.current!.value = currentTimeText
+    const currentTime = audioRef.current!.currentTime;
+    setTimeProgress(currentTime);
+    const currentTimeText: string = currentTime.toString();
+    progressBarRef.current!.value = currentTimeText;
     progressBarRef.current!.style.setProperty(
-        '--range-progress',
-        `${(currentTime / duration) * 100}%`
-    )
+      "--range-progress",
+      `${(currentTime / duration) * 100}%`
+    );
     playAnimationRef.current = requestAnimationFrame(repeat);
   }, []);
 
   const skipForward = () => {
-    audioRef.current!.currentTime += 10
-  }
+    audioRef.current!.currentTime += 10;
+  };
 
   const skipBackward = () => {
-    audioRef.current!.currentTime -= 10
-
-  }
+    audioRef.current!.currentTime -= 10;
+  };
 
   useEffect(() => {
     if (isPlaying) {
