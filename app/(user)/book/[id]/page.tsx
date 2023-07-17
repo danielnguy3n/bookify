@@ -2,12 +2,20 @@
 
 import BookPageSkeleton from "@/components/UI/BookPageSkeleton";
 import Skeleton from "@/components/UI/Skeleton";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { openModal } from "@/redux/modalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { Book } from "@/typings";
 import { User, onAuthStateChanged } from "firebase/auth";
+import {
+  DocumentData,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -16,7 +24,7 @@ import {
   AiOutlineClockCircle,
   AiOutlineStar,
 } from "react-icons/ai";
-import { BsBookmark } from "react-icons/bs";
+import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
 import { HiOutlineBookOpen, HiOutlineLightBulb } from "react-icons/hi";
 
 async function getBook(id: string) {
@@ -31,6 +39,8 @@ function bookPage({ params }: { params: { id: string } }) {
   const [book, setBook] = useState<Book>();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<Boolean>(true);
+  const [myLibrary, setMyLibrary] = useState<DocumentData[]>();
+  const [addedToList, setAddedToList] = useState<Boolean>(false);
 
   const premiumStatus = usePremiumStatus(auth.currentUser);
 
@@ -67,6 +77,38 @@ function bookPage({ params }: { params: { id: string } }) {
       setBookDuration(durationString);
     }
   };
+
+  async function handleList() {
+    if (addedToList) {
+      await deleteDoc(doc(db, "users", user!.uid, "myLibrary", book!.id));
+    } else {
+      await setDoc(doc(db, "users", user!.uid, "myLibrary", book!.id), {
+        ...book,
+      });
+    }
+  }
+
+  async function fetchList() {
+    if (user) {
+      onSnapshot(collection(db, "users", user.uid, "myLibrary"), (snapshot) => {
+        setMyLibrary(snapshot.docs);
+      });
+    }
+  }
+
+  function checkList() {
+    if (myLibrary) {
+      setAddedToList(myLibrary.findIndex((result) => result.data().id === book?.id) !== -1)
+    }
+  }
+
+  useEffect(() => {
+    checkList()
+  }, [myLibrary])
+
+  useEffect(() => {
+    fetchList()
+  }, [user, db])
 
   return (
     <div className="row">
@@ -168,11 +210,27 @@ function bookPage({ params }: { params: { id: string } }) {
                     </>
                   )}
                 </div>
-                <div className="book-info__bookmark">
-                  <div className="bookmark__icon">
-                    <BsBookmark />
-                  </div>
-                  <div className="bookmark__text">Add Title to My Library</div>
+                <div
+                  className="book-info__bookmark"
+                  onClick={() => handleList()}
+                >
+                  {addedToList ? (
+                    <>
+                      <div className="bookmark__icon">
+                        <BsFillBookmarkFill />
+                      </div>
+                      <div className="bookmark__text">Saved in My Library</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="bookmark__icon">
+                        <BsBookmark />
+                      </div>
+                      <div className="bookmark__text">
+                        Add Title to My Library
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className="book-info__secondary-title">
                   What's It About?

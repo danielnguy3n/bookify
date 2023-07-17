@@ -6,9 +6,10 @@ import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
+import { DocumentData } from "firebase/firestore";
 
 interface Props {
-  data: Book[];
+  data: Book[] | DocumentData[];
 }
 
 function BookRow({ data }: Props) {
@@ -44,18 +45,18 @@ function BookRow({ data }: Props) {
 
   // }
 
-  const [user, setUser] = useState<User | null>();
-  useEffect(() => {
-    const authState = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        setUser(null);
-      } else {
-        setUser(user);
-      }
-    });
+  // const [user, setUser] = useState<User | null>();
+  // useEffect(() => {
+  //   const authState = onAuthStateChanged(auth, (user) => {
+  //     if (!user) {
+  //       setUser(null);
+  //     } else {
+  //       setUser(user);
+  //     }
+  //   });
 
-    return authState;
-  }, []);
+  //   return authState;
+  // }, []);
 
   const premium = usePremiumStatus(auth.currentUser)
   

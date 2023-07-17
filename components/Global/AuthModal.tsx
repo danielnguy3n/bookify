@@ -16,7 +16,6 @@ import {
 import { auth, db, provider } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { setUser } from "@/redux/userSlice";
-import { withRouter } from "next/router";
 import { usePathname, useRouter } from "next/navigation";
 
 function AuthModal() {
@@ -53,6 +52,9 @@ function AuthModal() {
       );
       setData(user.email, user.uid);
       dispatch(closeModal());
+      if (pathname.match("/")) {
+        router.push("/for-you")
+      }
     } catch (err: any) {
       setError(err.message);
       setLoading("");
@@ -60,15 +62,12 @@ function AuthModal() {
   }
 
   async function handleSignIn() {
-    console.log(router)
-    console.log(pathname)
     try {
       setLoading("form");
       const { user } = await signInWithEmailAndPassword(auth, email, password);
       setData(user.email, user.uid);
       dispatch(closeModal());
       if (pathname.match("/")) {
-        console.log('push')
         router.push("/for-you")
       }
     } catch (err: any) {
@@ -81,6 +80,9 @@ function AuthModal() {
     setLoading("guest");
     await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
     dispatch(closeModal());
+    if (pathname.match("/")) {
+      router.push("/for-you")
+    }
   }
 
   async function signInWithGoogle() {
@@ -89,6 +91,9 @@ function AuthModal() {
       const { user } = await signInWithPopup(auth, provider);
       setData(user.email, user.uid);
       dispatch(closeModal());
+      if (pathname.match("/")) {
+        router.push("/for-you")
+      }
     } catch (err: any) {
       setError(err.message);
       setLoading("");

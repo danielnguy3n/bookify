@@ -5,8 +5,8 @@ function BookRowSkeleton() {
     <div className="for-you__recommended--books">
       {Array(5)
         .fill(0)
-        .map(() => (
-          <div className="book--wrapper">
+        .map((_,index) => (
+          <div className="book--wrapper" key={index}>
             <Skeleton width={200} height={240} marginBottom={8} />
             <Skeleton width={200} height={20} marginBottom={8} />
             <Skeleton width={180} height={15} marginBottom={8} />

@@ -5,9 +5,10 @@ import { useRef, useState, useEffect, Suspense } from "react";
 import { AiOutlineStar } from "react-icons/ai";
 import { HiOutlineClock } from "react-icons/hi";
 import Skeleton from "../UI/Skeleton";
+import { DocumentData } from "firebase/firestore";
 
 interface Props {
-  book: Book;
+  book: Book | DocumentData;
   premium: string | null;
 }
 
