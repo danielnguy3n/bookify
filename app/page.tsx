@@ -24,7 +24,7 @@ export default function Home() {
       <nav className="nav">
         <div className="nav__wrapper">
           <figure className="nav__img--mask">
-            <Image src="/images/logo.png" alt="logo" width={400} height={400} />
+            <Image src="/images/logo.png" alt="logo" width={200} height={45} />
           </figure>
           <ul className="nav__list--wrapper">
             <li className="nav__list nav__list--login">Login</li>
