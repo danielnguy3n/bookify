@@ -23,7 +23,7 @@ function choosePlan() {
             Turn ordinary moments into amazing learning opprtunities
           </div>
           <figure className="plan__img--mask">
-            <Image src={pricingTop} alt="Pricing Image" />
+            <Image src={pricingTop} alt="Pricing Image"  className="plan__img"/>
           </figure>
         </div>
       </div>

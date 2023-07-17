@@ -3,10 +3,13 @@
 import { Book } from "@/typings";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { HiMagnifyingGlass } from "react-icons/hi2";
+import { FiMenu } from "react-icons/fi";
 import SearchResult from "./SearchResult";
 import { IoMdClose } from "react-icons/io";
 import Skeleton from "../UI/Skeleton";
 import useDebounce from "./useDebounce";
+import { closeSidebar, openSidebar } from "@/redux/sidebarSlice";
+import { useAppDispatch } from "@/redux/store";
 
 async function fetchResults(search: string | undefined) {
   if (!search) return;
@@ -17,6 +20,7 @@ async function fetchResults(search: string | undefined) {
 }
 
 function Searchbar() {
+  const dispatch = useAppDispatch()
   const [results, setResults] = useState<Book[] | null>();
   const [input, setInput] = useState<string>('');
 
@@ -92,7 +96,9 @@ function Searchbar() {
                 ))}
             </div>
           </div>
-          <div className="sidebar__toggle--btn"></div>
+          <div className="sidebar__toggle--btn" onClick={() => dispatch(openSidebar())}>
+            <FiMenu />
+          </div>
         </div>
       </div>
     </div>

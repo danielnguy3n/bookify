@@ -104,7 +104,7 @@ function bookPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     checkList()
-  }, [myLibrary])
+  }, [myLibrary, book])
 
   useEffect(() => {
     fetchList()

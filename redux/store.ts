@@ -4,12 +4,14 @@ import type { TypedUseSelectorHook } from 'react-redux'
 import fontSizeSlice from './fontSizeSlice'
 import modalSlice from './modalSlice'
 import userSlice from './userSlice'
+import sidebarSlice from './sidebarSlice'
 
 export const store = configureStore({
   reducer: {
     fontSize: fontSizeSlice,
     modals: modalSlice,
     user: userSlice,
+    sidebar: sidebarSlice
   },
 })
 

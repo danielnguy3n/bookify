@@ -15,18 +15,21 @@ import BookRow from "@/components/For-You/BookRow";
 function Library() {
   const dispatch = useAppDispatch();
 
-  const [user, setUser] = useState<User | null>();
+  const [user, setUser] = useState<User | null>(null);
   const [myLibrary, setMyLibrary] = useState<Book[] | DocumentData[]>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [myFinishedLibrary, setMyFinishedLibrary] = useState<
+    Book[] | DocumentData[]
+  >();
+  const [loading, setLoading] = useState<boolean | null>(true);
 
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (user) => {
       if (!user) {
         setUser(null);
+        setLoading(false);
       } else {
         setUser(user);
       }
-      setLoading(false);
     });
 
     return authState;
@@ -34,9 +37,17 @@ function Library() {
 
   function fetchList() {
     if (user) {
+      setLoading(true);
       onSnapshot(collection(db, "users", user.uid, "myLibrary"), (snapshot) => {
         setMyLibrary(snapshot.docs.map((book) => book.data()));
       });
+      onSnapshot(
+        collection(db, "users", user.uid, "myFinishedLibrary"),
+        (snapshot) => {
+          setMyFinishedLibrary(snapshot.docs.map((book) => book.data()));
+        }
+      );
+      setLoading(false);
     }
   }
 
@@ -48,16 +59,17 @@ function Library() {
     <div className="row">
       <div className="container">
         {loading ? (
-          <LibrarySkeleton />
+            <LibrarySkeleton />
         ) : (
           <>
             {user ? (
               <>
                 <div className="library__title">Saved Books</div>
-                {myLibrary ? (
+                {myLibrary && myLibrary.length !== 0 ? (
                   <>
                     <div className="library__subtitle">
-                      {myLibrary.length} items
+                      {myLibrary.length}{" "}
+                      {myLibrary.length === 1 ? "item" : "items"}
                     </div>
                     <BookRow data={myLibrary} />
                   </>
@@ -74,14 +86,27 @@ function Library() {
                     </div>
                   </>
                 )}
-                <div className="library__title">Finished</div>
-                <div className="library__subtitle">0 items</div>
-                <div className="library__empty-row">
-                  <div className="empty__title">Done and dusted!</div>
-                  <div className="empty__description">
-                    When you finish a book, you can find it here later.
-                  </div>
-                </div>
+
+                <div className="library__title">Finished Books</div>
+                {myFinishedLibrary && myFinishedLibrary.length !== 0 ? (
+                  <>
+                    <div className="library__subtitle">
+                      {myFinishedLibrary.length}{" "}
+                      {myFinishedLibrary.length === 1 ? "item" : "items"}
+                    </div>
+                    <BookRow data={myFinishedLibrary} />
+                  </>
+                ) : (
+                  <>
+                    <div className="library__subtitle">0 items</div>
+                    <div className="library__empty-row">
+                      <div className="empty__title">Done and dusted!</div>
+                      <div className="empty__description">
+                        When you finish a book, you can find it here later.
+                      </div>
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <>
@@ -104,7 +129,7 @@ function Library() {
                   </button>
                 </div>
               </>
-            )}{" "}
+            )}
           </>
         )}
       </div>

@@ -42,6 +42,14 @@ function AuthModal() {
     );
   }
 
+  function processLogin(email: string | null, uid: string) {
+    setData(email, uid)
+    dispatch(closeModal());
+      if (pathname.endsWith("/")) {
+        router.push("/for-you");
+      }
+  }
+
   async function handleSignUp() {
     try {
       setLoading("form");
@@ -50,11 +58,7 @@ function AuthModal() {
         email,
         password
       );
-      setData(user.email, user.uid);
-      dispatch(closeModal());
-      if (pathname.match("/")) {
-        router.push("/for-you")
-      }
+      processLogin(user.email, user.uid);
     } catch (err: any) {
       setError(err.message);
       setLoading("");
@@ -65,11 +69,7 @@ function AuthModal() {
     try {
       setLoading("form");
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      setData(user.email, user.uid);
-      dispatch(closeModal());
-      if (pathname.match("/")) {
-        router.push("/for-you")
-      }
+      processLogin(user.email, user.uid);
     } catch (err: any) {
       setError(err.message);
       setLoading("");
@@ -78,22 +78,15 @@ function AuthModal() {
 
   async function guestSignIn() {
     setLoading("guest");
-    await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
-    dispatch(closeModal());
-    if (pathname.match("/")) {
-      router.push("/for-you")
-    }
+    const { user } = await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
+    processLogin(user.email, user.uid);
   }
 
   async function signInWithGoogle() {
     try {
       setLoading("google");
       const { user } = await signInWithPopup(auth, provider);
-      setData(user.email, user.uid);
-      dispatch(closeModal());
-      if (pathname.match("/")) {
-        router.push("/for-you")
-      }
+      processLogin(user.email, user.uid);
     } catch (err: any) {
       setError(err.message);
       setLoading("");

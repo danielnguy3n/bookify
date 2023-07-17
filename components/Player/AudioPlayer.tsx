@@ -3,7 +3,7 @@ import DisplayBook from "./DisplayBook";
 import Controls from "./Controls";
 import ProgressBar from "./ProgressBar";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
 
@@ -18,7 +18,6 @@ function AudioPlayer({ book, setLoading, loading }: Props) {
   const progressBarRef = useRef<HTMLInputElement>(null);
   const [timeProgress, setTimeProgress] = useState<number | undefined>(0)
   const [duration, setDuration] = useState<number>(0)
-  const [audioFinished, setAudioFinished] = useState<Boolean>(false)
   const [isPlaying, setIsPlaying] = useState<Boolean>(false);
   const [user, setUser] = useState<User>()
   
