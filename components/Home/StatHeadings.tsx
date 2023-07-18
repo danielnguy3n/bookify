@@ -29,7 +29,6 @@ function StatHeadings({
 
   useEffect(() => {
     const interval = setInterval(() => updateHeading(), 2000);
-    console.log(activeHeading);
     return () => clearInterval(interval);
   }, []);
   return (

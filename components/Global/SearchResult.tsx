@@ -12,9 +12,10 @@ import { HiOutlineClock } from "react-icons/hi2";
 
 interface Props {
   result: Book;
+  setInput: Dispatch<SetStateAction<string>>
 }
 
-function SearchResult({ result }: Props) {
+function SearchResult({ result, setInput }: Props) {
   const [bookDuration, setBookDuration] = useState<string>("00:00");
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -39,7 +40,7 @@ function SearchResult({ result }: Props) {
   }, []);
 
   return (
-    <Link href={`book/${result.id}`} className="search__result">
+    <Link href={`/book/${result.id}`} className="search__result" onClick={() => setInput("")}>
       <audio
         src={result?.audioLink}
         ref={audioRef}

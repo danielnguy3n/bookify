@@ -12,8 +12,7 @@ export default function UserLayout({
     <ReduxProvider>
       <div className="wrapper">
         <SidebarOverlay />
-        <Nav audioNav={false} />
-        
+        <Nav />
         <Searchbar />
         {children}
       </div>

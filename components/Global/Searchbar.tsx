@@ -40,7 +40,6 @@ function Searchbar() {
 
   useEffect(() => {
     getResults(debouncedInput);
-
   }, [debouncedInput]);
 
   function handleInput(e: ChangeEvent<HTMLInputElement>) {
@@ -88,7 +87,7 @@ function Searchbar() {
                     <div className="search__results--wrapper">
                       {results
                         ? results?.map((result) => (
-                            <SearchResult key={result.id} result={result} />
+                            <SearchResult key={result.id} result={result} setInput={setInput} />
                           ))
                         : "No Books Found"}
                     </div>

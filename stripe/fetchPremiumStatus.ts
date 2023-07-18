@@ -1,10 +1,11 @@
 import { auth } from "@/firebase";
-import { IdTokenResult } from "firebase/auth";
 
-export default async function fetchPremiumStatus(): Promise<IdTokenResult | undefined>{
-
+export default async function fetchPremiumStatus() {
   await auth.currentUser?.getIdToken(true);
   const decodedToken = await auth.currentUser?.getIdTokenResult();
-
-  return decodedToken;
+  const stripeRole: any = decodedToken?.claims.stripeRole;
+  if (!stripeRole) {
+    return "Basic";
+  } 
+  return stripeRole;
 }

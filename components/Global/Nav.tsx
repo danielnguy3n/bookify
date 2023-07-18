@@ -18,13 +18,8 @@ import { signOutUser } from "@/redux/userSlice";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "../../public/images/logo.png";
-import { closeSidebar } from "@/redux/sidebarSlice";
 
-interface Props {
-  audioNav: Boolean;
-}
-
-function Nav({ audioNav }: Props) {
+function Nav() {
   const [activeTab, setActiveTab] = useState(1);
   const modalOpen = useAppSelector((state) => state.modals.modalOpen);
   const [user, setUser] = useState<User | null>();
@@ -54,13 +49,12 @@ function Nav({ audioNav }: Props) {
 
   return (
     <>
-      
-        {modalOpen && <AuthModal />}
+      {modalOpen && <AuthModal />}
       <nav className={`sidebar ${sidebarOpen && `sidebar__open`}`}>
         <div className="sidebar__logo">
           <Image src={Logo} alt="logo" width={160} height={40} className="" />
         </div>
-        <div className={`sidebar__wrapper ${audioNav && `audio__sidebar`}`}>
+        <div className={`sidebar__wrapper ${pathName.startsWith("/player") && `audio__sidebar`}`}>
           <div className="sidebar__top">
             <Link href="/for-you" className="sidebar__link--wrapper">
               <div
@@ -99,7 +93,7 @@ function Nav({ audioNav }: Props) {
               <div className="sidebar__link--text">Search</div>
             </div>
 
-            {audioNav && (
+            {pathName.startsWith("/player") && (
               <div className="sidebar__link--wrapper sidebar__fonts">
                 <div
                   className={`sidebar__font-icon ${

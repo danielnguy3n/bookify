@@ -1,23 +1,23 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useAppDispatch } from "@/redux/store";
 import Image from "next/image";
 import LoginImg from "../../../public/images/login.png";
 import { openModal } from "@/redux/modalSlice";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
-import usePremiumStatus from "@/stripe/usePremiumStatus";
 import Link from "next/link";
 import { ImSpinner8 } from "react-icons/im";
 import Skeleton from "@/components/UI/Skeleton";
+import fetchPremiumStatus from "@/stripe/fetchPremiumStatus";
 
 function Settings() {
-  const [user, setUser] = useState<User | null>();
+  const [user, setUser] = useState<User | null>(null);
   const [loadingSpinner, setLoadingSpinner] = useState<Boolean>(false);
   const [loading, setLoading] = useState<Boolean>(true);
   const dispatch = useAppDispatch();
-  const premiumStatus = usePremiumStatus(auth.currentUser);
+  const [premium, setPremium] = useState<string | null>(null)
 
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (user) => {
@@ -31,6 +31,15 @@ function Settings() {
 
     return authState;
   }, []);
+
+  async function premiumStatus() {
+    const premium = await fetchPremiumStatus()
+    setPremium(premium)
+  }
+
+  useEffect(() => {
+    premiumStatus()
+  }, [user])
 
   return (
     <div className="row">
@@ -48,8 +57,8 @@ function Settings() {
           <>
             <div className="settings__content">
               <div className="settings__subtitle">Your Subscription Plan</div>
-              <div className="settings__desc">{premiumStatus}</div>
-              {premiumStatus === "Basic" && (
+              <div className="settings__desc">{premium}</div>
+              {premium === "Basic" && (
                 <Link href={`/choose-plan`}>
                   <button
                     className="btn settings__btn"

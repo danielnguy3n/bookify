@@ -5,6 +5,7 @@ import Skeleton from "@/components/UI/Skeleton";
 import { auth, db } from "@/firebase";
 import { openModal } from "@/redux/modalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import fetchPremiumStatus from "@/stripe/fetchPremiumStatus";
 import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { Book } from "@/typings";
 import { User, onAuthStateChanged } from "firebase/auth";
@@ -41,8 +42,7 @@ function bookPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState<Boolean>(true);
   const [myLibrary, setMyLibrary] = useState<DocumentData[]>();
   const [addedToList, setAddedToList] = useState<Boolean>(false);
-
-  const premiumStatus = usePremiumStatus(auth.currentUser);
+  const [premium, setPremium] = useState<string | null>(null);
 
   async function fetchBook() {
     const data = await getBook(bookId);
@@ -98,17 +98,31 @@ function bookPage({ params }: { params: { id: string } }) {
 
   function checkList() {
     if (myLibrary) {
-      setAddedToList(myLibrary.findIndex((result) => result.data().id === book?.id) !== -1)
+      setAddedToList(
+        myLibrary.findIndex((result) => result.data().id === book?.id) !== -1
+      );
     }
   }
 
-  useEffect(() => {
-    checkList()
-  }, [myLibrary, book])
+  const premiumCondition =
+    (premium === "Basic" || !premium) && book?.subscriptionRequired;
+
+  async function premiumStatus() {
+    const premium = await fetchPremiumStatus();
+    setPremium(premium);
+  }
 
   useEffect(() => {
-    fetchList()
-  }, [user, db])
+    premiumStatus();
+  }, [user]);
+
+  useEffect(() => {
+    checkList();
+  }, [myLibrary, book]);
+
+  useEffect(() => {
+    fetchList();
+  }, [user, db]);
 
   return (
     <div className="row">
@@ -126,8 +140,8 @@ function bookPage({ params }: { params: { id: string } }) {
               <div className="inner__book">
                 <div className="book-info__title">
                   {book?.title}
-                  {premiumStatus === "Basic" ||
-                    (!premiumStatus && " (Premium)")}
+                  {premiumCondition &&
+                    " (Premium)"}
                 </div>
                 <div className="book-info__author">{book?.author}</div>
                 <div className="book-info__subtitle">{book?.subTitle}</div>
@@ -170,7 +184,13 @@ function bookPage({ params }: { params: { id: string } }) {
                 <div className="book-info__button-wrapper">
                   {user ? (
                     <>
-                      <Link href={`/player/${bookId}`}>
+                      <Link
+                        href={
+                          premiumCondition
+                            ? `/choose-plan`
+                            : `/player/${bookId}`
+                        }
+                      >
                         <button className="book-info__button">
                           <div className="button__icon">
                             <HiOutlineBookOpen />
@@ -210,28 +230,47 @@ function bookPage({ params }: { params: { id: string } }) {
                     </>
                   )}
                 </div>
-                <div
-                  className="book-info__bookmark"
-                  onClick={() => handleList()}
-                >
-                  {addedToList ? (
-                    <>
-                      <div className="bookmark__icon">
-                        <BsFillBookmarkFill />
-                      </div>
-                      <div className="bookmark__text">Saved in My Library</div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="bookmark__icon">
-                        <BsBookmark />
-                      </div>
-                      <div className="bookmark__text">
-                        Add Title to My Library
-                      </div>
-                    </>
-                  )}
-                </div>
+                {user ? (
+                  <>
+                    <div
+                      className="book-info__bookmark"
+                      onClick={() => handleList()}
+                    >
+                      {addedToList ? (
+                        <>
+                          <div className="bookmark__icon">
+                            <BsFillBookmarkFill />
+                          </div>
+                          <div className="bookmark__text">
+                            Saved in My Library
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="bookmark__icon">
+                            <BsBookmark />
+                          </div>
+                          <div className="bookmark__text">
+                            Add Title to My Library
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    className="book-info__bookmark"
+                    onClick={() => dispatch(openModal())}
+                  >
+                    <div className="bookmark__icon">
+                      <BsBookmark />
+                    </div>
+                    <div className="bookmark__text">
+                      Add Title to My Library
+                    </div>
+                  </div>
+                )}
+
                 <div className="book-info__secondary-title">
                   What's It About?
                 </div>

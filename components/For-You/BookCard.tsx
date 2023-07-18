@@ -15,6 +15,7 @@ interface Props {
 function BookCard({ book, premium }: Props) {
   const [bookDuration, setBookDuration] = useState<string>("00:00");
   const audioRef = useRef<HTMLAudioElement>(null);
+  const premiumCondition = (premium === "Basic" || !premium) && book.subscriptionRequired
 
   const onLoadedData = () => {
     if (audioRef.current) {
@@ -43,7 +44,7 @@ function BookCard({ book, premium }: Props) {
         ref={audioRef}
         onLoadedData={onLoadedData}
       ></audio>
-      {(premium === "Basic" || !premium) && book.subscriptionRequired && (
+      { premiumCondition && (
         <div className="book--pill">Premium</div>
       )}
       <figure className="book__image--wrapper">

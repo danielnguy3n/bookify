@@ -1,6 +1,5 @@
 import BookRow from "@/components/For-You/BookRow";
 import SelectedBook from "@/components/For-You/SelectedBook";
-import Skeleton from "@/components/UI/Skeleton";
 
 async function getBooks(status: string) {
   const res = await fetch(
@@ -20,6 +19,7 @@ export default async function ForYou() {
     suggestedData,
   ]);
 
+  
   return (
     <div className="row">
       <div className="container">

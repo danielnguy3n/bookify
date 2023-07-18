@@ -59,7 +59,6 @@ function PlanSelector() {
 
 
   function handleClick() {
-    console.log(user?.uid);
     if (user?.uid) {
       if (yearlyPlan) {
         createCheckoutSession(user?.uid, priceIds[1]);
