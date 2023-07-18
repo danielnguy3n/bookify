@@ -22,8 +22,9 @@ function DisplayBook({
   setLoading,
   onEnded
 }: Props) {
-  const onLoadedData = () => {
-    const seconds = audioRef.current!.duration;
+  const onLoadedMetadata = () => {
+    if (!audioRef.current) return
+    const seconds = audioRef.current.duration;
     setDuration(seconds);
     const strSeconds: string = seconds.toString();
     progressBarRef.current!.max = strSeconds;
@@ -32,7 +33,7 @@ function DisplayBook({
 
   return (
     <div className="audio__track--wrapper">
-      <audio src={book?.audioLink} ref={audioRef} onLoadedData={onLoadedData} onEnded={() => onEnded()}  />
+      <audio src={book?.audioLink} ref={audioRef} onLoadedMetadata={onLoadedMetadata} onEnded={() => onEnded()}  />
       <figure className="audio__img--mask">
         <figure className="audio__img--wrapper">
           {loading ? (

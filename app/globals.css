@@ -1264,6 +1264,7 @@ background-color: #f7faf9;
   overflow: hidden;
 }
 
+
 /* =========================
 Custom Input range 
 =============================*/
@@ -1271,7 +1272,7 @@ Custom Input range
 /* Input range - chrome and safari */
 
 input[type="range"] {
-  --range-progress: 0%;
+  --range-progress: 0;
   
   -webkit-appearance: none;
   position: relative;

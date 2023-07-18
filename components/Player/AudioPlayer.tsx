@@ -33,8 +33,8 @@ function AudioPlayer({ book, setLoading, loading }: Props) {
       await setDoc(doc(db, "users", user.uid, "myFinishedLibrary", book!.id), {...book})
     }
 
-    if (audioRef) {
-      audioRef.current!.currentTime = 0
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0
       setIsPlaying(false)
     }
     
