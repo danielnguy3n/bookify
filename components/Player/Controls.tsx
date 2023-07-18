@@ -56,7 +56,7 @@ function Controls({
       audioRef.current?.pause();
       cancelAnimationFrame(playAnimationRef.current!);
     }
-  }, [isPlaying, audioRef]);
+  }, [isPlaying, audioRef, repeat]);
 
   return (
     <div className="audio__controls--wrapper">

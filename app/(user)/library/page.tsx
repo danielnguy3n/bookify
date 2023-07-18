@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useAppDispatch } from "@/redux/store";
 import LoginImg from "../../../public/images/login.png";
 import Image from "next/image";
 import { openModal } from "@/redux/modalSlice";
@@ -35,31 +35,33 @@ function Library() {
     return authState;
   }, []);
 
-  function fetchList() {
-    if (user) {
-      setLoading(true);
-      onSnapshot(collection(db, "users", user.uid, "myLibrary"), (snapshot) => {
-        setMyLibrary(snapshot.docs.map((book) => book.data()));
-      });
-      onSnapshot(
-        collection(db, "users", user.uid, "myFinishedLibrary"),
-        (snapshot) => {
-          setMyFinishedLibrary(snapshot.docs.map((book) => book.data()));
-        }
-      );
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+    function fetchList() {
+      if (user) {
+        setLoading(true);
+        onSnapshot(
+          collection(db, "users", user.uid, "myLibrary"),
+          (snapshot) => {
+            setMyLibrary(snapshot.docs.map((book) => book.data()));
+          }
+        );
+        onSnapshot(
+          collection(db, "users", user.uid, "myFinishedLibrary"),
+          (snapshot) => {
+            setMyFinishedLibrary(snapshot.docs.map((book) => book.data()));
+          }
+        );
+        setLoading(false);
+      }
+    }
     fetchList();
-  }, [db, user]);
+  }, [user]);
 
   return (
     <div className="row">
       <div className="container">
         {loading ? (
-            <LibrarySkeleton />
+          <LibrarySkeleton />
         ) : (
           <>
             {user ? (

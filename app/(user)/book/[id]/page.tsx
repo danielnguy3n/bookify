@@ -6,7 +6,6 @@ import { auth, db } from "@/firebase";
 import { openModal } from "@/redux/modalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import fetchPremiumStatus from "@/stripe/fetchPremiumStatus";
-import usePremiumStatus from "@/stripe/usePremiumStatus";
 import { Book } from "@/typings";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
@@ -88,41 +87,41 @@ function BookPage({ params }: { params: { id: string } }) {
     }
   }
 
-  async function fetchList() {
-    if (user) {
-      onSnapshot(collection(db, "users", user.uid, "myLibrary"), (snapshot) => {
-        setMyLibrary(snapshot.docs);
-      });
-    }
-  }
-
-  function checkList() {
-    if (myLibrary) {
-      setAddedToList(
-        myLibrary.findIndex((result) => result.data().id === book?.id) !== -1
-      );
-    }
-  }
-
   const premiumCondition =
     (premium === "Basic" || !premium) && book?.subscriptionRequired;
 
-  async function premiumStatus() {
-    const premium = await fetchPremiumStatus();
-    setPremium(premium);
-  }
-
   useEffect(() => {
+    async function premiumStatus() {
+      const premium = await fetchPremiumStatus();
+      setPremium(premium);
+    }
     premiumStatus();
   }, [user]);
 
   useEffect(() => {
+    function checkList() {
+      if (myLibrary) {
+        setAddedToList(
+          myLibrary.findIndex((result) => result.data().id === book?.id) !== -1
+        );
+      }
+    }
     checkList();
   }, [myLibrary, book]);
 
   useEffect(() => {
+    async function fetchList() {
+      if (user) {
+        onSnapshot(
+          collection(db, "users", user.uid, "myLibrary"),
+          (snapshot) => {
+            setMyLibrary(snapshot.docs);
+          }
+        );
+      }
+    }
     fetchList();
-  }, [user, db]);
+  }, [user]);
 
   return (
     <div className="row">
@@ -140,8 +139,7 @@ function BookPage({ params }: { params: { id: string } }) {
               <div className="inner__book">
                 <div className="book-info__title">
                   {book?.title}
-                  {premiumCondition &&
-                    " (Premium)"}
+                  {premiumCondition && " (Premium)"}
                 </div>
                 <div className="book-info__author">{book?.author}</div>
                 <div className="book-info__subtitle">{book?.subTitle}</div>
@@ -272,7 +270,7 @@ function BookPage({ params }: { params: { id: string } }) {
                 )}
 
                 <div className="book-info__secondary-title">
-                  What's It About?
+                  {`What's It About?`}
                 </div>
                 <div className="book-info__tags-wrapper">
                   <div className="book-info__tag">{book?.tags[0]}</div>
