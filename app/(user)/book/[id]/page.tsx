@@ -35,7 +35,7 @@ async function getBook(id: string) {
   return res.json();
 }
 
-function bookPage({ params }: { params: { id: string } }) {
+function BookPage({ params }: { params: { id: string } }) {
   const bookId: string = params.id;
   const [book, setBook] = useState<Book>();
   const [user, setUser] = useState<User>();
@@ -310,4 +310,4 @@ function bookPage({ params }: { params: { id: string } }) {
   );
 }
 
-export default bookPage;
+export default BookPage;

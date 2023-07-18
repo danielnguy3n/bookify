@@ -64,8 +64,8 @@ function Accordian() {
       </div>
       <div className="accordian__card" onClick={() => toggleCard(3)}>
         <div className="accordian__header">
-          <div className="accordian__title">
-            What's included in the Premium Plan?
+          <div className="accordian__title"> 
+            What is included in the Premium Plan?
           </div>
           <BsChevronDown
             className={`accordian__icon ${
