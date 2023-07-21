@@ -1,6 +1,6 @@
 import { Book } from "@/typings";
 import Image from "next/image";
-import { Dispatch, RefObject, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
 import Skeleton from "../UI/Skeleton";
 
 interface Props {
@@ -22,6 +22,7 @@ function DisplayBook({
   setLoading,
   onEnded
 }: Props) {
+
   const onLoadedMetadata = () => {
     if (!audioRef.current) return
     const seconds = audioRef.current.duration;

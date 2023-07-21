@@ -1,9 +1,10 @@
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 interface Props {
   progressBarRef: RefObject<HTMLInputElement>;
   audioRef: RefObject<HTMLAudioElement>;
   timeProgress: number | undefined;
+  setTimeProgress: Dispatch<SetStateAction<number | undefined>>;
   duration: number | undefined;
 }
 
@@ -12,11 +13,19 @@ function ProgressBar({
   audioRef,
   timeProgress,
   duration,
+  setTimeProgress
 }: Props) {
 
   const handleProgressChange = () => {
+    if (!audioRef.current) return
     const time = +progressBarRef.current!.value;
-    audioRef.current!.currentTime = time;
+    setTimeProgress(time);
+    audioRef.current.currentTime = time;
+
+    const duration = audioRef.current.duration
+    const updatedTime = (time / duration) * 100
+
+    progressBarRef.current!.style.setProperty("--range-progress", `${updatedTime}%`)
   };
 
   const formatTime = (time: number | undefined) => {
