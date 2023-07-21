@@ -2019,6 +2019,19 @@ input[type="range"]:active::-moz-range-thumb {
     display: flex;
     flex-direction: column;
   }
+
+  .selected__book {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .selected__book--divider {
+    display: none;
+  }
+
+  .selected__book--content, .selected__book--subtitle {
+    width: 100%;
+  }
 }
 
 @media (max-width: 576px) {
