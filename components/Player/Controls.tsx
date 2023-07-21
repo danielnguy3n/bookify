@@ -12,7 +12,7 @@ import { IoPauseSharp, IoPlaySharp } from "react-icons/io5";
 interface Props {
   audioRef: RefObject<HTMLAudioElement>;
   progressBarRef: RefObject<HTMLInputElement>;
-  duration: number;
+  duration: number | undefined;
   setTimeProgress: Dispatch<SetStateAction<number | undefined>>;
   isPlaying: Boolean;
   setIsPlaying: Dispatch<SetStateAction<Boolean>>;
@@ -29,15 +29,18 @@ function Controls({
   const playAnimationRef = useRef<number>();
 
   const repeat = useCallback(() => {
-    const currentTime = audioRef.current!.currentTime;
-    setTimeProgress(currentTime);
-    const currentTimeText: string = currentTime.toString();
-    progressBarRef.current!.value = currentTimeText;
-    progressBarRef.current!.style.setProperty(
-      "--range-progress",
-      `${(currentTime / duration) * 100}%`
-    );
-    playAnimationRef.current = requestAnimationFrame(repeat);
+    if (duration && !isNaN(duration)) {
+      const currentTime = audioRef.current!.currentTime;
+      setTimeProgress(currentTime);
+      const currentTimeText: string = currentTime.toString();
+      progressBarRef.current!.value = currentTimeText;
+      progressBarRef.current!.style.setProperty(
+        "--range-progress",
+        `${(currentTime / duration) * 100}%`
+      );
+      console.log(duration)
+      playAnimationRef.current = requestAnimationFrame(repeat);
+    }
   }, []);
 
   const skipForward = () => {
