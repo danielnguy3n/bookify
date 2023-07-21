@@ -17,13 +17,15 @@ import { auth, db, provider } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { setUser } from "@/redux/userSlice";
 import { usePathname, useRouter } from "next/navigation";
+import ForgotPassword from "./ForgotPassword";
 
 function AuthModal() {
   const [signIn, setSignIn] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<string>("");
+  const [modalType, setModalType] = useState<string>("signIn");
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -43,11 +45,11 @@ function AuthModal() {
   }
 
   function processLogin(email: string | null, uid: string) {
-    setData(email, uid)
+    setData(email, uid);
     dispatch(closeModal());
-      if (pathname.endsWith("/")) {
-        router.push("/for-you");
-      }
+    if (pathname.endsWith("/")) {
+      router.push("/for-you");
+    }
   }
 
   async function handleSignUp() {
@@ -78,7 +80,11 @@ function AuthModal() {
 
   async function guestSignIn() {
     setLoading("guest");
-    const { user } = await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
+    const { user } = await signInWithEmailAndPassword(
+      auth,
+      "guest@gmail.com",
+      "guest123"
+    );
     processLogin(user.email, user.uid);
   }
 
@@ -107,7 +113,7 @@ function AuthModal() {
     <div className="modal__wrapper" onClick={() => dispatch(closeModal())}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal__content">
-          {signIn ? (
+          {modalType === "signIn" && (
             <>
               <div className="modal__title">Login to Summarist</div>
               {error && <div className="modal__error">{error}</div>}
@@ -147,7 +153,9 @@ function AuthModal() {
                 </div>
               </button>
             </>
-          ) : (
+          )}
+
+          {modalType === "signUp" && (
             <>
               <div className="modal__title">Sign up Summarist</div>
               {error && <div className="modal__error">{error}</div>}
@@ -170,37 +178,78 @@ function AuthModal() {
             </>
           )}
 
-          <div className="modal__separator">
-            <span>or</span>
-          </div>
-          <form onSubmit={handleSubmit} className="login__form">
-            <input
-              type="text"
-              className="login__input"
-              placeholder="Email Address"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              className="login__input"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          {modalType !== "forgotPassword" && (
+            <>
+              <div className="modal__separator">
+                <span>or</span>
+              </div>
+              <form onSubmit={handleSubmit} className="login__form">
+                <input
+                  type="text"
+                  className="login__input"
+                  placeholder="Email Address"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="login__input"
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
 
-            <button type="submit" className="btn" disabled={loading === "form"}>
-              {loading === "form" ? (
-                <ImSpinner8 className="login__spinner black--spinner" />
-              ) : (
-                <> {signIn ? "Login" : "Sign Up"} </>
-              )}
-            </button>
-          </form>
+                <button
+                  type="submit"
+                  className="btn"
+                  disabled={loading === "form"}
+                >
+                  {loading === "form" ? (
+                    <ImSpinner8 className="login__spinner black--spinner" />
+                  ) : (
+                    <> {signIn ? "Login" : "Sign Up"} </>
+                  )}
+                </button>
+              </form>
+            </>
+          )}
+          {modalType === "forgotPassword" && <ForgotPassword />}
         </div>
-        <div className="modal__forgot-password">Forgot your password?</div>
 
-        <button className="modal__account" onClick={() => toggleModal()}>
-          {signIn ? `Don't have an account?` : `Already have an account?`}
-        </button>
+        {modalType !== "forgotPassword" && (
+          <div
+            className="modal__forgot-password"
+            onClick={() => setModalType("forgotPassword")}
+          >
+            Forgot your password?
+          </div>
+        )}
+
+        {modalType === "signIn" && (
+          <button
+            className="modal__account"
+            onClick={() => setModalType("signUp")}
+          >
+            {`Don't Have an Account?`}
+          </button>
+        )}
+
+        {modalType === "signUp" && (
+          <button
+            className="modal__account"
+            onClick={() => setModalType("signIn")}
+          >
+            {`Already have an account?`}
+          </button>
+        )}
+
+        {modalType === "forgotPassword" && (
+          <button
+            className="modal__account"
+            onClick={() => setModalType("signIn")}
+          >
+            {`Go to Login`}
+          </button>
+        )}
+
         <div className="modal__close" onClick={() => dispatch(closeModal())}>
           <IoMdClose />
         </div>
