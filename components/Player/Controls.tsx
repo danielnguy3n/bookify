@@ -38,7 +38,6 @@ function Controls({
         "--range-progress",
         `${(currentTime / duration) * 100}%`
       );
-      console.log(duration)
       playAnimationRef.current = requestAnimationFrame(repeat);
     }
   }, []);

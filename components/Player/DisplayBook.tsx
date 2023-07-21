@@ -7,7 +7,7 @@ interface Props {
   book?: Book;
   audioRef: RefObject<HTMLAudioElement>;
   progressBarRef: RefObject<HTMLInputElement>;
-  setDuration: Dispatch<SetStateAction<number>>;
+  setDuration: Dispatch<SetStateAction<number | undefined>>;
   setLoading: Dispatch<SetStateAction<Boolean>>;
   loading: Boolean;
   onEnded: Function;

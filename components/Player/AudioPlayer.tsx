@@ -17,7 +17,7 @@ function AudioPlayer({ book, setLoading, loading }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLInputElement>(null);
   const [timeProgress, setTimeProgress] = useState<number | undefined>(0)
-  const [duration, setDuration] = useState<number>(0)
+  const [duration, setDuration] = useState<number | undefined>(0)
   const [isPlaying, setIsPlaying] = useState<Boolean>(false);
   const [user, setUser] = useState<User>()
   
@@ -31,12 +31,13 @@ function AudioPlayer({ book, setLoading, loading }: Props) {
   async function onEnded() {
     if (user) {
       await setDoc(doc(db, "users", user.uid, "myFinishedLibrary", book!.id), {...book})
-    }
-
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0
+      audioRef.current!.currentTime = 0
       setIsPlaying(false)
     }
+
+    // if (audioRef.current) {
+      
+    // }
     
   }
 
