@@ -23,7 +23,8 @@ function PlanSelector() {
   const [priceIds, setPriceIds] = useState<string[]>([]);
   const modalOpen = useAppSelector((state) => state.modals.modalOpen);
   const dispatch = useAppDispatch();
-  const [user, setUser] = useState<User>();
+  const user = useAppSelector(state => state.user)
+  const isAuth = useAppSelector(state => state.auth.isAuth)
   const [loading, setLoading] = useState<string>("plan");
 
   async function fetchProducts() {
@@ -44,16 +45,8 @@ function PlanSelector() {
     // setLoading("");
   }
 
-  useEffect(() => {
-    const authState = onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      setUser(user);
-    });
-    return authState;
-  }, []);
-
   function handleClick() {
-    if (user?.uid) {
+    if (isAuth) {
       if (yearlyPlan) {
         createCheckoutSession(user?.uid, "price_1NV8m7AWGUZnUEjjtTQ2bsez");
       } else {

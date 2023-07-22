@@ -1,12 +1,11 @@
 "use client";
 
-import { useAppDispatch } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import LoginImg from "../../../public/images/login.png";
 import Image from "next/image";
 import { openModal } from "@/redux/modalSlice";
 import { useEffect, useState } from "react";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "@/firebase";
+import { db } from "@/firebase";
 import LibrarySkeleton from "@/components/UI/LibrarySkeleton";
 import { Book } from "@/typings";
 import { DocumentData, collection, onSnapshot } from "firebase/firestore";
@@ -15,47 +14,37 @@ import BookRow from "@/components/For-You/BookRow";
 function Library() {
   const dispatch = useAppDispatch();
 
-  const [user, setUser] = useState<User | null>(null);
+  const uid = useAppSelector(state => state.user.uid)
+  const isAuth = useAppSelector(state => state.auth.isAuth)
   const [myLibrary, setMyLibrary] = useState<Book[] | DocumentData[]>();
   const [myFinishedLibrary, setMyFinishedLibrary] = useState<
     Book[] | DocumentData[]
   >();
-  const [loading, setLoading] = useState<boolean | null>(true);
-
-  useEffect(() => {
-    const authState = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        setUser(null);
-        setLoading(false);
-      } else {
-        setUser(user);
-      }
-    });
-
-    return authState;
-  }, []);
+  // const [loading, setLoading] = useState<boolean | null>(true);
+  const loading = useAppSelector((state) => state.auth.authLoading)
 
   useEffect(() => {
     function fetchList() {
-      if (user) {
-        setLoading(true);
+      if (isAuth) {
+        // setLoading(true);
         onSnapshot(
-          collection(db, "users", user.uid, "myLibrary"),
+          collection(db, "users", uid, "myLibrary"),
           (snapshot) => {
             setMyLibrary(snapshot.docs.map((book) => book.data()));
           }
         );
         onSnapshot(
-          collection(db, "users", user.uid, "myFinishedLibrary"),
+          collection(db, "users", uid, "myFinishedLibrary"),
           (snapshot) => {
             setMyFinishedLibrary(snapshot.docs.map((book) => book.data()));
           }
         );
-        setLoading(false);
       }
+      // setLoading(false);
+      
     }
     fetchList();
-  }, [user]);
+  }, [isAuth]);
 
   return (
     <div className="row">
@@ -64,7 +53,7 @@ function Library() {
           <LibrarySkeleton />
         ) : (
           <>
-            {user ? (
+            {isAuth ? (
               <>
                 <div className="library__title">Saved Books</div>
                 {myLibrary && myLibrary.length !== 0 ? (

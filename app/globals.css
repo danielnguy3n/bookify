@@ -1749,6 +1749,11 @@ input[type="range"]:active::-moz-range-thumb {
   height: 28px;
 }
 
+.btn__text {
+  display: flex;
+  align-items: center;
+}
+
 .login__spinner {
   width: 24px;
   height: 24px;
@@ -1845,6 +1850,7 @@ input[type="range"]:active::-moz-range-thumb {
 }
 
 .settings__login--title {
+  text-align: center;
   font-weight: 700;
   font-size: 24px;
 }

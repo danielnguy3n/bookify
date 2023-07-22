@@ -37,11 +37,13 @@ async function getBook(id: string) {
 function BookPage({ params }: { params: { id: string } }) {
   const bookId: string = params.id;
   const [book, setBook] = useState<Book>();
-  const [user, setUser] = useState<User>();
+  const uid = useAppSelector(state => state.user.uid)
+  const isAuth = useAppSelector(state => state.auth.isAuth)
   const [loading, setLoading] = useState<Boolean>(true);
   const [myLibrary, setMyLibrary] = useState<DocumentData[]>();
   const [addedToList, setAddedToList] = useState<Boolean>(false);
-  const [premium, setPremium] = useState<string | null>(null);
+  const premium = useAppSelector(state => state.user.subscriptionPlan)
+
 
   async function fetchBook() {
     const data = await getBook(bookId);
@@ -50,13 +52,9 @@ function BookPage({ params }: { params: { id: string } }) {
   }
 
   useEffect(() => {
-    fetchBook();
-    const authState = onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      setUser(user);
-    });
-    return authState;
-  }, []);
+    fetchBook()
+  }, [])
+
 
   const dispatch = useAppDispatch();
 
@@ -79,9 +77,9 @@ function BookPage({ params }: { params: { id: string } }) {
 
   async function handleList() {
     if (addedToList) {
-      await deleteDoc(doc(db, "users", user!.uid, "myLibrary", book!.id));
+      await deleteDoc(doc(db, "users", uid, "myLibrary", book!.id));
     } else {
-      await setDoc(doc(db, "users", user!.uid, "myLibrary", book!.id), {
+      await setDoc(doc(db, "users", uid, "myLibrary", book!.id), {
         ...book,
       });
     }
@@ -89,14 +87,6 @@ function BookPage({ params }: { params: { id: string } }) {
 
   const premiumCondition =
     (premium === "Basic" || !premium) && book?.subscriptionRequired;
-
-  useEffect(() => {
-    async function premiumStatus() {
-      const premium = await fetchPremiumStatus();
-      setPremium(premium);
-    }
-    premiumStatus();
-  }, [user]);
 
   useEffect(() => {
     function checkList() {
@@ -111,9 +101,9 @@ function BookPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function fetchList() {
-      if (user) {
+      if (isAuth) {
         onSnapshot(
-          collection(db, "users", user.uid, "myLibrary"),
+          collection(db, "users", uid, "myLibrary"),
           (snapshot) => {
             setMyLibrary(snapshot.docs);
           }
@@ -121,7 +111,7 @@ function BookPage({ params }: { params: { id: string } }) {
       }
     }
     fetchList();
-  }, [user]);
+  }, [uid]);
 
   return (
     <div className="row">
@@ -180,7 +170,7 @@ function BookPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
                 <div className="book-info__button-wrapper">
-                  {user ? (
+                  {isAuth ? (
                     <>
                       <Link
                         href={
@@ -228,7 +218,7 @@ function BookPage({ params }: { params: { id: string } }) {
                     </>
                   )}
                 </div>
-                {user ? (
+                {isAuth ? (
                   <>
                     <div
                       className="book-info__bookmark"

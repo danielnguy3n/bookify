@@ -18,12 +18,13 @@ import { signOutUser } from "@/redux/userSlice";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "../../public/images/logo.png";
+import { setAuth } from "@/redux/authSlice";
 
 function Nav() {
   const [activeTab, setActiveTab] = useState(1);
   const modalOpen = useAppSelector((state) => state.modals.modalOpen);
-  const [user, setUser] = useState<User | null>();
   const sidebarOpen = useAppSelector((state) => state.sidebar.sidebarOpen);
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
   const pathName = usePathname();
   const dispatch = useAppDispatch();
 
@@ -33,19 +34,10 @@ function Nav() {
   }
 
   function handleSignOut() {
-    setUser(null);
     signOut(auth);
     dispatch(signOutUser());
+    dispatch(setAuth({ isAuth: false }));
   }
-
-  useEffect(() => {
-    const authState = onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      setUser(user);
-    });
-
-    return authState;
-  }, []);
 
   return (
     <>
@@ -54,7 +46,11 @@ function Nav() {
         <div className="sidebar__logo">
           <Image src={Logo} alt="logo" width={160} height={40} className="" />
         </div>
-        <div className={`sidebar__wrapper ${pathName.startsWith("/player") && `audio__sidebar`}`}>
+        <div
+          className={`sidebar__wrapper ${
+            pathName.startsWith("/player") && `audio__sidebar`
+          }`}
+        >
           <div className="sidebar__top">
             <Link href="/for-you" className="sidebar__link--wrapper">
               <div
@@ -150,7 +146,7 @@ function Nav() {
               </div>
               <div className="sidebar__link--text">Help & Support</div>
             </div>
-            {user ? (
+            {isAuth ? (
               <div
                 className="sidebar__link--wrapper "
                 onClick={() => handleSignOut()}

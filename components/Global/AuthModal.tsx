@@ -9,7 +9,10 @@ import { useState, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { closeModal } from "@/redux/modalSlice";
 import {
+  User,
   createUserWithEmailAndPassword,
+  getIdToken,
+  getIdTokenResult,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -18,6 +21,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { setUser } from "@/redux/userSlice";
 import { usePathname, useRouter } from "next/navigation";
 import ForgotPassword from "./ForgotPassword";
+import { setAuth } from "@/redux/authSlice";
 
 function AuthModal() {
   const [signIn, setSignIn] = useState(true);
@@ -30,22 +34,28 @@ function AuthModal() {
   const router = useRouter();
   const pathname = usePathname();
 
-  async function setData(email: string | null, uid: string) {
-    await setDoc(doc(db, "users", uid), {
-      uid: uid,
-      email: email,
+  async function setData(user: User) {
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      email: user.email,
     });
+
+    await getIdToken(user, true);
+    const decodedToken = await getIdTokenResult(user);
 
     dispatch(
       setUser({
-        uid: uid,
-        email: email,
+        uid: user.uid,
+        email: user.email,
+        subscriptionPlan: decodedToken.claims.stripeRole || "Basic",
       })
     );
+
+    dispatch(setAuth({ isAuth: true }));
   }
 
-  function processLogin(email: string | null, uid: string) {
-    setData(email, uid);
+  function processLogin(user: User) {
+    setData(user);
     dispatch(closeModal());
     if (pathname.endsWith("/")) {
       router.push("/for-you");
@@ -60,7 +70,7 @@ function AuthModal() {
         email,
         password
       );
-      processLogin(user.email, user.uid);
+      processLogin(user);
     } catch (err: any) {
       setError(err.message);
       setLoading("");
@@ -71,7 +81,7 @@ function AuthModal() {
     try {
       setLoading("form");
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      processLogin(user.email, user.uid);
+      processLogin(user);
     } catch (err: any) {
       setError(err.message);
       setLoading("");
@@ -85,14 +95,14 @@ function AuthModal() {
       "guest@gmail.com",
       "guest123"
     );
-    processLogin(user.email, user.uid);
+    processLogin(user);
   }
 
   async function signInWithGoogle() {
     try {
       setLoading("google");
       const { user } = await signInWithPopup(auth, provider);
-      processLogin(user.email, user.uid);
+      processLogin(user);
     } catch (err: any) {
       setError(err.message);
       setLoading("");
@@ -101,11 +111,11 @@ function AuthModal() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    signIn ? handleSignIn() : handleSignUp();
+    modalType === "signIn" ? handleSignIn() : handleSignUp();
   }
 
-  function toggleModal() {
-    setSignIn(!signIn);
+  function setModal(modalType: string) {
+    setModalType(modalType);
     setError("");
   }
 
@@ -205,7 +215,7 @@ function AuthModal() {
                   {loading === "form" ? (
                     <ImSpinner8 className="login__spinner black--spinner" />
                   ) : (
-                    <> {signIn ? "Login" : "Sign Up"} </>
+                    <> {modalType === "signIn" ? "Login" : "Sign Up"} </>
                   )}
                 </button>
               </form>
@@ -217,35 +227,26 @@ function AuthModal() {
         {modalType !== "forgotPassword" && (
           <div
             className="modal__forgot-password"
-            onClick={() => setModalType("forgotPassword")}
+            onClick={() => setModal("forgotPassword")}
           >
             Forgot your password?
           </div>
         )}
 
         {modalType === "signIn" && (
-          <button
-            className="modal__account"
-            onClick={() => setModalType("signUp")}
-          >
+          <button className="modal__account" onClick={() => setModal("signUp")}>
             {`Don't Have an Account?`}
           </button>
         )}
 
         {modalType === "signUp" && (
-          <button
-            className="modal__account"
-            onClick={() => setModalType("signIn")}
-          >
+          <button className="modal__account" onClick={() => setModal("signIn")}>
             {`Already have an account?`}
           </button>
         )}
 
         {modalType === "forgotPassword" && (
-          <button
-            className="modal__account"
-            onClick={() => setModalType("signIn")}
-          >
+          <button className="modal__account" onClick={() => setModal("signIn")}>
             {`Go to Login`}
           </button>
         )}

@@ -1,5 +1,6 @@
-'use client'
+"use client";
 
+import { useAppSelector } from "@/redux/store";
 import { Book } from "@/typings";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,30 +14,35 @@ interface Props {
 function SelectedBook({ data }: Props) {
   const book = data[0];
 
-  const [bookDuration, setBookDuration] = useState<string>('0 mins 00 secs')
-  const audioRef = useRef<HTMLAudioElement>(null)
-  
+  const [bookDuration, setBookDuration] = useState<string>("0 mins 00 secs");
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   const onLoadedData = () => {
     if (audioRef.current) {
-      const duration = audioRef.current.duration
-      const minutes = Math.floor((duration / 60))
-      const seconds = Math.floor(duration % 60)
+      const duration = audioRef.current.duration;
+      if (!isNaN(duration)) {
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
 
-      const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`
-      const durationString = `${minutes} mins ${formatSeconds} secs`
+        const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+        const durationString = `${minutes} mins ${formatSeconds} secs`;
 
-      setBookDuration(durationString)
+        setBookDuration(durationString);
+      }
     }
-  }
+  };
 
   useEffect(() => {
-    onLoadedData()
-  }, [])
-
+    onLoadedData();
+  }, []);
 
   return (
     <Link href={`book/${book.id}`} className="selected__book">
-      <audio src={book.audioLink} ref={audioRef} onLoadedData={onLoadedData}></audio>
+      <audio
+        src={book.audioLink}
+        ref={audioRef}
+        onLoadedData={onLoadedData}
+      ></audio>
       <div className="selected__book--subtitle">{book.subTitle}</div>
       <div className="selected__book--divider"></div>
       <div className="selected__book--content">

@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
+import { useAppSelector } from "@/redux/store";
 
 interface Props {
   book?: Book;
@@ -19,18 +20,12 @@ function AudioPlayer({ book, setLoading, loading }: Props) {
   const [timeProgress, setTimeProgress] = useState<number | undefined>(0);
   const [duration, setDuration] = useState<number | undefined>(0);
   const [isPlaying, setIsPlaying] = useState<Boolean>(false);
-  const [user, setUser] = useState<User>();
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      setUser(user);
-    });
-  }, []);
+  const uid = useAppSelector(state => state.user.uid)
+  const isAuth = useAppSelector(state => state.auth.isAuth)
 
   async function onEnded() {
-    if (user) {
-      await setDoc(doc(db, "users", user.uid, "myFinishedLibrary", book!.id), {
+    if (isAuth) {
+      await setDoc(doc(db, "users", uid, "myFinishedLibrary", book!.id), {
         ...book,
       });
     }

@@ -5,13 +5,15 @@ import fontSizeSlice from './fontSizeSlice'
 import modalSlice from './modalSlice'
 import userSlice from './userSlice'
 import sidebarSlice from './sidebarSlice'
+import authSlice from './authSlice'
 
 export const store = configureStore({
   reducer: {
     fontSize: fontSizeSlice,
     modals: modalSlice,
     user: userSlice,
-    sidebar: sidebarSlice
+    sidebar: sidebarSlice,
+    auth: authSlice
   },
 })
 

@@ -1,6 +1,6 @@
 import { ReduxProvider } from "@/redux/provider";
 import "./globals.css";
-
+import VerifyUser from "@/components/Global/VerifyUser";
 
 export const metadata = {
   title: "Summarist",
@@ -15,7 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <VerifyUser />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

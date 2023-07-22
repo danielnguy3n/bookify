@@ -1,3 +1,5 @@
+import { openModal } from "@/redux/modalSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
   RefObject,
   useEffect,
@@ -25,6 +27,8 @@ function Controls({
   setIsPlaying,
 }: Props) {
   const playAnimationRef = useRef<number>();
+  const isAuth = useAppSelector(state => state.auth.isAuth)
+  const dispatch = useAppDispatch()
 
   const repeat = useCallback(() => {
     if (audioRef.current) {
@@ -45,12 +49,28 @@ function Controls({
   }, []);
 
   const skipForward = () => {
-    audioRef.current!.currentTime += 10;
+    if (isAuth) {
+      audioRef.current!.currentTime += 10;
+    } else {
+      dispatch(openModal())
+    }
   };
 
   const skipBackward = () => {
-    audioRef.current!.currentTime -= 10;
+    if (isAuth) {
+      audioRef.current!.currentTime -= 10;
+    } else {
+      dispatch(openModal())
+    }
   };
+
+  const playButton = () => {
+    if (isAuth) {
+      setIsPlaying(!isPlaying)
+    } else {
+      dispatch(openModal())
+    }
+  }
 
   useEffect(() => {
     if (isPlaying) {
@@ -70,7 +90,7 @@ function Controls({
         </button>
         <button
           className="audio__controls--btn audio__controls--btn--play"
-          onClick={() => setIsPlaying(!isPlaying)}
+          onClick={() => playButton()}
         >
           {isPlaying ? (
             <IoPauseSharp />
