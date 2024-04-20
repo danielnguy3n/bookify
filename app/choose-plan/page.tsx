@@ -42,7 +42,7 @@ function choosePlan() {
                 <RiPlantFill />
               </figure>
               <div className="plan__features--text">
-                <b>3 million</b> people growing with Summarist everyday
+                <b>3 million</b> people growing with Bookify everyday
               </div>
             </div>
 

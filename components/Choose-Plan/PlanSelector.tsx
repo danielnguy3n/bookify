@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AuthModal from "../Global/AuthModal";
+import AuthModal from "../Global/AuthModal/AuthModal";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { openModal } from "@/redux/modalSlice";
 import { createCheckoutSession } from "@/stripe/createCheckoutSession";

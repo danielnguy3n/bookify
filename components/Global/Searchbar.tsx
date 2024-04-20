@@ -1,15 +1,31 @@
 "use client";
 
-import { Book } from "@/typings";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useAppDispatch } from "@/redux/store";
+
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FiMenu } from "react-icons/fi";
+import { IoMdClose as CloseIcon } from "react-icons/io";
+
 import SearchResult from "./SearchResult";
-import { IoMdClose } from "react-icons/io";
 import Skeleton from "../UI/Skeleton";
-import useDebounce from "./useDebounce";
-import { closeSidebar, openSidebar } from "@/redux/sidebarSlice";
-import { useAppDispatch } from "@/redux/store";
+import useDebounce from "../../hooks/useDebounce";
+
+import { openSidebar } from "@/redux/sidebarSlice";
+
+import { Book } from "@/typings";
+
+const SearchSkeleton = () => {
+  return (
+    <div className="search__results--wrapper">
+      <Skeleton width={`100%`} height={114} marginBottom={8} />
+      <Skeleton width={`100%`} height={114} marginBottom={8} />
+      <Skeleton width={`100%`} height={114} marginBottom={8} />
+      <Skeleton width={`100%`} height={114} marginBottom={8} />
+      <Skeleton width={`100%`} height={114} />
+    </div>
+  );
+};
 
 async function fetchResults(search: string | undefined) {
   if (!search) return;
@@ -20,13 +36,13 @@ async function fetchResults(search: string | undefined) {
 }
 
 function Searchbar() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const [results, setResults] = useState<Book[] | null>();
-  const [input, setInput] = useState<string>('');
+  const [input, setInput] = useState<string>("");
 
   const debouncedInput = useDebounce(input, 300);
 
-  const [searchLoading, setSearchLoading] = useState<Boolean | null>(null);
+  const [loading, setLoading] = useState<Boolean | null>(null);
 
   async function getResults(input: string | undefined) {
     const data = await fetchResults(input);
@@ -35,7 +51,7 @@ function Searchbar() {
     } else {
       setResults(data);
     }
-    setSearchLoading(false);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -43,9 +59,11 @@ function Searchbar() {
   }, [debouncedInput]);
 
   function handleInput(e: ChangeEvent<HTMLInputElement>) {
-    setSearchLoading(true);
+    setLoading(true);
     setInput(e.target.value);
   }
+
+  const isInputEmpty = !input;
 
   return (
     <div className="search__background">
@@ -63,7 +81,7 @@ function Searchbar() {
               />
               <div className="search__icon">
                 {input ? (
-                  <IoMdClose
+                  <CloseIcon
                     onClick={() => setInput("")}
                     className="search__icon--pointer"
                   />
@@ -71,31 +89,27 @@ function Searchbar() {
                   <HiMagnifyingGlass />
                 )}
               </div>
-              {input &&
-                (searchLoading ? (
-                  <>
-                    <div className="search__results--wrapper">
-                      <Skeleton width={`100%`} height={114} marginBottom={8} />
-                      <Skeleton width={`100%`} height={114} marginBottom={8} />
-                      <Skeleton width={`100%`} height={114} marginBottom={8} />
-                      <Skeleton width={`100%`} height={114} marginBottom={8} />
-                      <Skeleton width={`100%`} height={114} />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="search__results--wrapper">
-                      {results
-                        ? results?.map((result) => (
-                            <SearchResult key={result.id} result={result} setInput={setInput} />
-                          ))
-                        : "No Books Found"}
-                    </div>
-                  </>
-                ))}
+              {!isInputEmpty && loading && <SearchSkeleton />}
+              {!isInputEmpty && !results && !loading && (
+                <div className="search__results--wrapper"> No Books Found </div>
+              )}
+              {!isInputEmpty && results && (
+                <div className="search__results--wrapper">
+                  {results.map((result) => (
+                    <SearchResult
+                      key={result.id}
+                      result={result}
+                      setInput={setInput}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-          <div className="sidebar__toggle--btn" onClick={() => dispatch(openSidebar())}>
+          <div
+            className="sidebar__toggle--btn"
+            onClick={() => dispatch(openSidebar())}
+          >
             <FiMenu />
           </div>
         </div>

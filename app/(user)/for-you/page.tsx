@@ -25,7 +25,7 @@ export default async function ForYou() {
       <div className="container">
         <div className="for-you__wrapper">
           <div className="for-you__title">Selected Just For you</div>
-          <SelectedBook data={selectedBook} />
+          <SelectedBook book={selectedBook[0]} />
 
           <div className="for-you__title">Recommended For You</div>
           <div className="for-you__subtitle">We think you’ll like these</div>

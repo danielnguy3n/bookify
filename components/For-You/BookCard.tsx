@@ -1,80 +1,112 @@
-import { Book } from "@/typings";
+import { useRef, Suspense } from "react";
+import { useAppSelector } from "@/redux/store";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect, Suspense } from "react";
+
 import { AiOutlineStar } from "react-icons/ai";
 import { HiOutlineClock } from "react-icons/hi";
-import Skeleton from "../UI/Skeleton";
-import { DocumentData } from "firebase/firestore";
 
-interface Props {
+import Skeleton from "../UI/Skeleton";
+
+import useAudioDuration from "@/hooks/useAudioDuration";
+
+import { DocumentData } from "firebase/firestore";
+import { Book } from "@/typings";
+
+const PremiumPill = () => {
+  return <div className="book--pill">Premium</div>;
+};
+
+const BookImage = ({ src }: { src: string }) => {
+  return (
+    <figure className="book__image--wrapper">
+      <Suspense fallback={<Skeleton width={172} height={172} />}>
+        <Image
+          src={src}
+          alt=""
+          className="book__img"
+          width={172}
+          height={172}
+        />
+      </Suspense>
+    </figure>
+  );
+};
+
+const BookHeader = ({
+  title,
+  author,
+  subTitle,
+}: {
+  title: string;
+  author: string;
+  subTitle: string;
+}) => {
+  return (
+    <>
+      <div className="book__title">{title}</div>
+      <div className="book__author">{author}</div>
+      <div className="book__subtitle">{subTitle}</div>
+    </>
+  );
+};
+
+const BookDetails = ({
+  bookDuration,
+  averageRating,
+}: {
+  bookDuration: string;
+  averageRating: number;
+}) => {
+  return (
+    <div className="book__details--wrapper">
+      <div className="book__details">
+        <div className="book__details--icon">
+          <HiOutlineClock />
+        </div>
+        <div className="book__details--text">{bookDuration}</div>
+      </div>
+      <div className="book__details">
+        <div className="book__details--icon">
+          <AiOutlineStar />
+        </div>
+        <div className="book__details--text">{averageRating}</div>
+      </div>
+    </div>
+  );
+};
+
+interface BookCardProps {
   book: Book | DocumentData;
-  premium: string | null;
 }
 
-function BookCard({ book, premium }: Props) {
-  const [bookDuration, setBookDuration] = useState<string>("00:00");
+function BookCard({ book }: BookCardProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const premiumCondition = (premium === "Basic" || !premium) && book.subscriptionRequired
+  const { bookDuration, onLoadedData } = useAudioDuration(audioRef);
 
-  const onLoadedData = () => {
-    if (audioRef.current) {
-      const duration = audioRef.current.duration;
-      if (!isNaN(duration)) {
-        const minutes = Math.floor(duration / 60);
-        const seconds = Math.floor(duration % 60);
+  const {
+    audioLink,
+    imageLink,
+    title,
+    author,
+    subTitle,
+    averageRating,
+    id,
+    subscriptionRequired,
+  } = book;
 
-        const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-        const durationString = `${formatMinutes}:${formatSeconds}`;
+  const premium = useAppSelector(state => state.user.subscriptionPlan)
 
-        setBookDuration(durationString);
-      }
-    }
-  };
-
-  useEffect(() => {
-    onLoadedData();
-  }, []);
+  const premiumCondition =
+    (premium === "Basic" || !premium) && subscriptionRequired;
 
   return (
-    <Link href={`/book/${book.id}`} className="book--wrapper">
-      <audio
-        src={book?.audioLink}
-        ref={audioRef}
-        onLoadedData={onLoadedData}
-      ></audio>
-      { premiumCondition && (
-        <div className="book--pill">Premium</div>
-      )}
-      <figure className="book__image--wrapper">
-        <Suspense fallback={<Skeleton width={172} height={172} />}>
-          <Image
-            src={book.imageLink}
-            alt=""
-            className="book__img"
-            width={172}
-            height={172}
-          />
-        </Suspense>
-      </figure>
-      <div className="book__title">{book.title}</div>
-      <div className="book__author">{book.author}</div>
-      <div className="book__subtitle">{book.subTitle}</div>
-      <div className="book__details--wrapper">
-        <div className="book__details">
-          <div className="book__details--icon">
-            <HiOutlineClock />
-          </div>
-          <div className="book__details--text">{bookDuration}</div>
-        </div>
-        <div className="book__details">
-          <div className="book__details--icon">
-            <AiOutlineStar />
-          </div>
-          <div className="book__details--text">{book.averageRating}</div>
-        </div>
-      </div>
+    <Link href={`/book/${id}`} className="book--wrapper">
+      <audio src={audioLink} ref={audioRef} onLoadedData={onLoadedData} />
+      {premiumCondition && <PremiumPill />}
+      <BookImage src={imageLink} />
+      <BookHeader {...{ title, author, subTitle }} />
+      <BookDetails {...{ bookDuration, averageRating }} />
     </Link>
   );
 }

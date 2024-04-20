@@ -1,37 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { AiOutlineHome, AiOutlineQuestionCircle } from "react-icons/ai";
-import { HiMagnifyingGlass } from "react-icons/hi2";
-import { RiBallPenLine, RiFontSize } from "react-icons/ri";
-import { BsBookmark } from "react-icons/bs";
-import { CiSettings } from "react-icons/ci";
-import { LuLogOut } from "react-icons/lu";
-import { setFontSize } from "@/redux/fontSizeSlice";
-import { openModal } from "@/redux/modalSlice";
+import React from "react";
+
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import AuthModal from "./AuthModal";
-import { User, onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/firebase";
-import { signOutUser } from "@/redux/userSlice";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
-import Logo from "../../public/images/logo.png";
+
+import { auth } from "@/firebase";
+import { signOut } from "firebase/auth";
+
 import { setAuth } from "@/redux/authSlice";
+import { signOutUser } from "@/redux/userSlice";
+
+import { openModal } from "@/redux/modalSlice";
+
+import AuthModal from "./AuthModal/AuthModal";
+
+import { LuLogOut } from "react-icons/lu";
+import Logo from "../../public/images/logo.png";
+
+import NavLink from "./NavLink";
+import NavFontSizeChanger from "./NavFontSizeChanger";
+
+import { NAV_LINKS } from "./constants";
 
 function Nav() {
-  const [activeTab, setActiveTab] = useState(1);
-  const modalOpen = useAppSelector((state) => state.modals.modalOpen);
-  const sidebarOpen = useAppSelector((state) => state.sidebar.sidebarOpen);
-  const isAuth = useAppSelector((state) => state.auth.isAuth);
   const pathName = usePathname();
   const dispatch = useAppDispatch();
 
-  function switchTabs(tabNum: number, fontSize: number) {
-    setActiveTab(tabNum);
-    dispatch(setFontSize(fontSize));
-  }
+  const modalOpen = useAppSelector((state) => state.modals.modalOpen);
+  const sidebarOpen = useAppSelector((state) => state.sidebar.sidebarOpen);
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
 
   function handleSignOut() {
     signOut(auth);
@@ -44,7 +43,10 @@ function Nav() {
       {modalOpen && <AuthModal />}
       <nav className={`sidebar ${sidebarOpen && `sidebar__open`}`}>
         <div className="sidebar__logo">
-          <Image src={Logo} alt="logo" width={160} height={40} className="" />
+          <a href="/for-you">
+            <h1 className="logo--gradient">Bookify</h1>
+          </a>
+          {/* <Image src={Logo} alt="logo" width={160} height={40} className="" /> */}
         </div>
         <div
           className={`sidebar__wrapper ${
@@ -52,100 +54,16 @@ function Nav() {
           }`}
         >
           <div className="sidebar__top">
-            <Link href="/for-you" className="sidebar__link--wrapper">
-              <div
-                className={`sidebar__link--line ${
-                  pathName.startsWith("/for-you") && `active--tab`
-                } `}
-              ></div>
-              <div className="sidebar__link--icon">
-                <AiOutlineHome />
-              </div>
-              <div className="sidebar__link--text">For You</div>
-            </Link>
-            <Link href="/library" className="sidebar__link--wrapper ">
-              <div
-                className={`sidebar__link--line ${
-                  pathName.startsWith("/library") && `active--tab`
-                } `}
-              ></div>
-              <div className="sidebar__link--icon">
-                <BsBookmark />
-              </div>
-              <div className="sidebar__link--text">My Library</div>
-            </Link>
-            <div className="sidebar__link--wrapper no-link">
-              <div className="sidebar__link--line"></div>
-              <div className="sidebar__link--icon">
-                <RiBallPenLine />
-              </div>
-              <div className="sidebar__link--text">Highlights</div>
-            </div>
-            <div className="sidebar__link--wrapper no-link">
-              <div className="sidebar__link--line"></div>
-              <div className="sidebar__link--icon">
-                <HiMagnifyingGlass />
-              </div>
-              <div className="sidebar__link--text">Search</div>
-            </div>
-
-            {pathName.startsWith("/player") && (
-              <div className="sidebar__link--wrapper sidebar__fonts">
-                <div
-                  className={`sidebar__font-icon ${
-                    activeTab === 1 && `font-size--active`
-                  }`}
-                  onClick={() => switchTabs(1, 16)}
-                >
-                  <RiFontSize className="font-s" />
-                </div>
-                <div
-                  className={`sidebar__font-icon ${
-                    activeTab === 2 && `font-size--active`
-                  }`}
-                  onClick={() => switchTabs(2, 18)}
-                >
-                  <RiFontSize className="font-m" />
-                </div>
-                <div
-                  className={`sidebar__font-icon ${
-                    activeTab === 3 && `font-size--active`
-                  }`}
-                  onClick={() => switchTabs(3, 22)}
-                >
-                  <RiFontSize className="font-l" />
-                </div>
-                <div
-                  className={`sidebar__font-icon ${
-                    activeTab === 4 && `font-size--active`
-                  }`}
-                  onClick={() => switchTabs(4, 26)}
-                >
-                  <RiFontSize className="font-xl" />
-                </div>
-              </div>
-            )}
+            {NAV_LINKS.slice(0, 4).map(({ href, icon, text, disabled }, i) => (
+              <NavLink key={i} {...{ href, icon, text, disabled }} />
+            ))}
+            {pathName.startsWith("/player") && <NavFontSizeChanger />}
           </div>
 
           <div className="nav__bot">
-            <Link href="/settings" className="sidebar__link--wrapper">
-              <div
-                className={`sidebar__link--line ${
-                  pathName.startsWith("/settings") && `active--tab`
-                } `}
-              ></div>
-              <div className="sidebar__link--icon">
-                <CiSettings />
-              </div>
-              <div className="sidebar__link--text">Settings</div>
-            </Link>
-            <div className="sidebar__link--wrapper no-link">
-              <div className="sidebar__link--line"></div>
-              <div className="sidebar__link--icon">
-                <AiOutlineQuestionCircle />
-              </div>
-              <div className="sidebar__link--text">Help & Support</div>
-            </div>
+            {NAV_LINKS.slice(4, 6).map(({ href, icon, text, disabled }, i) => (
+              <NavLink key={i} {...{ href, icon, text, disabled }} />
+            ))}
             {isAuth ? (
               <div
                 className="sidebar__link--wrapper "

@@ -2,29 +2,28 @@
 
 import { useEffect, useState } from "react";
 
-interface Props {
-  alignLeft: boolean;
-  heading1: string;
-  heading2: string;
-  heading3: string;
-  heading4: string;
-  heading5: string;
-  heading6: string;
+interface StatHeadingsProps {
+  alignLeft?: boolean;
+  headings: string[];
 }
 
-function StatHeadings({
-  alignLeft,
-  heading1,
-  heading2,
-  heading3,
-  heading4,
-  heading5,
-  heading6,
-}: Props) {
+const Heading = ({ text, active }: { text: string; active: boolean }) => {
+  return (
+    <div
+      className={`statistics__heading ${
+        active && `statistics__heading--active`
+      }`}
+    >
+      {text}
+    </div>
+  );
+};
+
+function StatHeadings({ alignLeft = false, headings }: StatHeadingsProps) {
   const [activeHeading, setActiveHeading] = useState<number>(0);
 
   function updateHeading() {
-    setActiveHeading(activeHeading => (activeHeading + 1) % 6);
+    setActiveHeading((activeHeading) => (activeHeading + 1) % 6);
   }
 
   useEffect(() => {
@@ -37,48 +36,9 @@ function StatHeadings({
         alignLeft ? "" : `statistics__content--header-second`
       }`}
     >
-      <div
-        className={`statistics__heading ${
-          activeHeading === 0 && `statistics__heading--active`
-        }`}
-      >
-        {heading1}
-      </div>
-      <div
-        className={`statistics__heading ${
-          activeHeading === 1 && `statistics__heading--active`
-        }`}
-      >
-        {heading2}
-      </div>
-      <div
-        className={`statistics__heading ${
-          activeHeading === 2 && `statistics__heading--active`
-        }`}
-      >
-        {heading3}
-      </div>
-      <div
-        className={`statistics__heading ${
-          activeHeading === 3 && `statistics__heading--active`
-        }`}
-      >
-        {heading4}
-      </div>
-      <div
-        className={`statistics__heading ${
-          activeHeading === 4 && `statistics__heading--active`
-        }`}
-      >
-        {heading5}
-      </div>
-      <div
-        className={`statistics__heading ${
-          activeHeading === 5 && `statistics__heading--active`
-        }`}
-      >
-        {heading6}
-      </div>
+      {headings.map((heading, i) => (
+        <Heading key={i} text={heading} active={activeHeading === i} />
+      ))}
     </div>
   );
 }

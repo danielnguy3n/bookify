@@ -27,11 +27,11 @@ function VerifyUser() {
 
         dispatch(setUser(userObj));
         dispatch(setAuth({ isAuth: true }));
-    } else {
+      } else {
         dispatch(setAuth({ isAuth: false }));
-    }
-    dispatch(setAuthLoading({ authLoading: false }));
-});
+      }
+      dispatch(setAuthLoading({ authLoading: false }));
+    });
 
     return unsubscribe;
   }, [dispatch]);

@@ -15,13 +15,15 @@ interface Props {
 }
 
 function AudioPlayer({ book, setLoading, loading }: Props) {
+  const uid = useAppSelector(state => state.user.uid)
+  const isAuth = useAppSelector(state => state.auth.isAuth)
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLInputElement>(null);
+
   const [timeProgress, setTimeProgress] = useState<number | undefined>(0);
   const [duration, setDuration] = useState<number | undefined>(0);
   const [isPlaying, setIsPlaying] = useState<Boolean>(false);
-  const uid = useAppSelector(state => state.user.uid)
-  const isAuth = useAppSelector(state => state.auth.isAuth)
 
   async function onEnded() {
     if (isAuth) {

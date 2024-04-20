@@ -1,81 +1,33 @@
+import { FOOTER_BLOCKS } from "../Global/constants";
+
+const FooterBlock = ({ title, links }: { title: string; links: string[] }) => {
+  return (
+    <div className="footer__block">
+      <div className="footer__link--title">{title}</div>
+      <div>
+        {links.map((link, i) => (
+          <div key={i} className="footer__link--wrapper">
+            <a className="footer__link">{link}</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 function Footer() {
   return (
     <section id="footer">
       <div className="container">
         <div className="row">
           <div className="footer__top--wrapper">
-            <div className="footer__block">
-              <div className="footer__link--title">Actions</div>
-              <div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Summarist Magazine</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Cancel Subscription</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Help</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Contact us</a>
-                </div>
-              </div>
-            </div>
-            <div className="footer__block">
-              <div className="footer__link--title">Useful Links</div>
-              <div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Pricing</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Summarist Business</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Gift Cards</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Authors & Publishers</a>
-                </div>
-              </div>
-            </div>
-            <div className="footer__block">
-              <div className="footer__link--title">Company</div>
-              <div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">About</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Careers</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Partners</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Code of Conduct</a>
-                </div>
-              </div>
-            </div>
-            <div className="footer__block">
-              <div className="footer__link--title">Other</div>
-              <div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Sitemap</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Legal Notice</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Terms of Service</a>
-                </div>
-                <div className="footer__link--wrapper">
-                  <a className="footer__link">Privacy Policies</a>
-                </div>
-              </div>
-            </div>
+            {FOOTER_BLOCKS.map(({ title, links }, i) => (
+              <FooterBlock key={i} title={title} links={links} />
+            ))}
           </div>
           <div className="footer__copyright--wrapper">
             <div className="footer__copyright">
-              Copyright &copy; 2023 Summarist.
+              Copyright &copy; 2023 Bookify.
             </div>
           </div>
         </div>

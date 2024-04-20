@@ -2,14 +2,17 @@
 
 import { auth } from "@/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { ImSpinner8 } from "react-icons/im";
+import { AuthModelContext } from "./AuthModal";
 
-function ForgotPassword() {
+export function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>();
+
+  const { setModal } = useContext(AuthModelContext);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,8 +51,10 @@ function ForgotPassword() {
           )}
         </button>
       </form>
+
+      <button className="modal__account" onClick={() => setModal("signIn")}>
+        {`Go to Login`}
+      </button>
     </>
   );
 }
-
-export default ForgotPassword;

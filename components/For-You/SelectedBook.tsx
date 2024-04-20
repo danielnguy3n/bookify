@@ -1,70 +1,75 @@
 "use client";
 
-import { useAppSelector } from "@/redux/store";
-import { Book } from "@/typings";
+import { Suspense, useRef } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+
 import { BsFillPlayCircleFill } from "react-icons/bs";
 
-interface Props {
-  data: Book[];
+import Skeleton from "../UI/Skeleton";
+import useAudioDuration from "@/hooks/useAudioDuration";
+
+import { Book } from "@/typings";
+import { DocumentData } from "firebase/firestore";
+
+const BookImage = ({ src }: { src: string }) => {
+  return (
+    <figure className="selected-book__image--wrapper">
+      <Suspense fallback={<Skeleton width={172} height={172} />}>
+        <Image
+          src={src}
+          alt=""
+          className="book--img"
+          width={140}
+          height={140}
+        />
+      </Suspense>
+    </figure>
+  );
+};
+
+const BookDetails = ({
+  title,
+  author,
+  bookDuration
+}: {
+  title: string;
+  author: string;
+  bookDuration: string;
+}) => {
+  return (
+    <div className="selected__book--text">
+    <div className="selected__book--title">{title}</div>
+    <div className="selected__book--author">{author}</div>
+    <div className="selected__book--duration-wrapper">
+      <div className="selected__book--icon">
+        <BsFillPlayCircleFill />
+      </div>
+      <div className="selected__book--duration">{bookDuration}</div>
+    </div>
+  </div>
+  );
+};
+
+interface SelectedBookProps {
+  book: Book | DocumentData;
 }
 
-function SelectedBook({ data }: Props) {
-  const book = data[0];
-
-  const [bookDuration, setBookDuration] = useState<string>("0 mins 00 secs");
+function SelectedBook({ book }: SelectedBookProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { bookDuration, onLoadedData } = useAudioDuration(audioRef);
 
-  const onLoadedData = () => {
-    if (audioRef.current) {
-      const duration = audioRef.current.duration;
-      if (!isNaN(duration)) {
-        const minutes = Math.floor(duration / 60);
-        const seconds = Math.floor(duration % 60);
-
-        const formatSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-        const durationString = `${minutes} mins ${formatSeconds} secs`;
-
-        setBookDuration(durationString);
-      }
-    }
-  };
-
-  useEffect(() => {
-    onLoadedData();
-  }, []);
+  const { audioLink, imageLink, title, author, subTitle, id } = book;
 
   return (
-    <Link href={`book/${book.id}`} className="selected__book">
-      <audio
-        src={book.audioLink}
-        ref={audioRef}
-        onLoadedData={onLoadedData}
-      ></audio>
-      <div className="selected__book--subtitle">{book.subTitle}</div>
+    <Link href={`book/${id}`} className="selected__book">
+      <audio src={audioLink} ref={audioRef} onLoadedData={onLoadedData}></audio>
+      <div className="selected__book--subtitle">{subTitle}</div>
       <div className="selected__book--divider"></div>
       <div className="selected__book--content">
-        <figure className="selected-book__image--wrapper">
-          <Image
-            src={book.imageLink}
-            alt=""
-            className="book--img"
-            width={140}
-            height={140}
-          />
-        </figure>
-        <div className="selected__book--text">
-          <div className="selected__book--title">{book.title}</div>
-          <div className="selected__book--author">{book.author}</div>
-          <div className="selected__book--duration-wrapper">
-            <div className="selected__book--icon">
-              <BsFillPlayCircleFill />
-            </div>
-            <div className="selected__book--duration">{bookDuration}</div>
-          </div>
-        </div>
+        <BookImage src={imageLink} />
+        <BookDetails {...{ title, author, bookDuration }} />
       </div>
     </Link>
   );
